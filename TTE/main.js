@@ -49,6 +49,34 @@ function resolveRendererEntry() {
   );
 }
 
+function copyDirectoryContents(sourceDir, targetDir) {
+  if (!fs.existsSync(sourceDir)) return;
+
+  fs.mkdirSync(targetDir, { recursive: true });
+
+  for (const entry of fs.readdirSync(sourceDir, { withFileTypes: true })) {
+    const sourcePath = path.join(sourceDir, entry.name);
+    const targetPath = path.join(targetDir, entry.name);
+
+    if (entry.isDirectory()) {
+      copyDirectoryContents(sourcePath, targetPath);
+    } else if (entry.isFile()) {
+      fs.copyFileSync(sourcePath, targetPath);
+    }
+  }
+}
+
+function refreshBundledPublicAssets() {
+  const publicAssetsPath = path.join(__dirname, "renderer", "public", "assets");
+  const bundledAssetsPath = path.join(__dirname, "renderer", "dist", "assets");
+
+  try {
+    copyDirectoryContents(publicAssetsPath, bundledAssetsPath);
+  } catch (error) {
+    console.warn("Unable to refresh renderer public assets:", error);
+  }
+}
+
 function createWindow() {
   Menu.setApplicationMenu(null);
 
@@ -68,6 +96,7 @@ function createWindow() {
   if (rendererEntry.type === "url") {
     mainWindow.loadURL(rendererEntry.target);
   } else {
+    refreshBundledPublicAssets();
     mainWindow.loadFile(rendererEntry.target);
   }
 

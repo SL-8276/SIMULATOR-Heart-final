@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+const mediaCacheVersion = Date.now();
+
 function resolveMediaSource(src) {
   if (!src) return src;
   if (/^(https?:|data:|blob:|file:)/i.test(src)) return src;
@@ -14,9 +16,16 @@ function resolveMediaSource(src) {
   return src;
 }
 
+function withCacheVersion(src) {
+  if (!src || /^(data:|blob:)/i.test(src)) return src;
+
+  const separator = src.includes("?") ? "&" : "?";
+  return `${src}${separator}v=${mediaCacheVersion}`;
+}
+
 export function MediaImage({ src, alt, fallbackTitle = "Probe Position Image" }) {
   const [error, setError] = useState(false);
-  const resolvedSrc = resolveMediaSource(src);
+  const resolvedSrc = withCacheVersion(resolveMediaSource(src));
 
   useEffect(() => {
     setError(false);
