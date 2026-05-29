@@ -1,0 +1,49 @@
+{
+  "name": "tte-simulator",
+  "version": "1.0.0",
+  "description": "Ultrasound Simulator - Heart Desktop App",
+  "main": "main.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "electron .",
+    "build:renderer": "npm --prefix renderer run build",
+    "build": "npm run build:renderer",
+    "dist": "npm run build:renderer && electron-builder --win nsis",
+    "pack": "npm run build:renderer && electron-builder --dir"
+  },
+  "dependencies": {
+    "@serialport/parser-readline": "^12.0.0",
+    "serialport": "^12.0.0"
+  },
+  "devDependencies": {
+    "electron": "^41.0.4",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.tte.simulator",
+    "productName": "ULTRASOUND SIMULATOR - HEART",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "serial.cjs",
+      "package.json",
+      "renderer/dist/**/*",
+      "data/**/*"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "npmRebuild": true
+  }
+}
