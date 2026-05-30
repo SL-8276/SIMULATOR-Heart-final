@@ -1,5 +1,6 @@
 const CALIBRATION_STORAGE_KEY = "tte-calibration-settings";
 const DEFAULT_QUATERNION_TOLERANCE = 0.18;
+const INACTIVE_PROBE_TAGS = new Set(["none"]);
 
 function canUseStorage() {
   return typeof window !== "undefined" && !!window.localStorage;
@@ -7,6 +8,10 @@ function canUseStorage() {
 
 export function normalizeTag(tag) {
   return String(tag ?? "").trim().toLowerCase();
+}
+
+export function isInactiveProbeTag(tag) {
+  return INACTIVE_PROBE_TAGS.has(normalizeTag(tag));
 }
 
 export function normalizeCoordinate(value) {
@@ -95,6 +100,7 @@ export function normalizeProbeReading(reading) {
 export function findMatchingView(reading, calibrations, views) {
   const normalized = normalizeProbeReading(reading);
   if (!normalized) return null;
+  if (isInactiveProbeTag(normalized.tag)) return null;
 
   const candidates = views
     .map((view) => {
@@ -145,7 +151,12 @@ export function findMatchingView(reading, calibrations, views) {
 
   if (exact.length) return exact[0];
 
-  return null;
+  const tagged = candidates.filter((candidate) => normalized.tag && normalizeTag(candidate.calibration.tag) === normalized.tag);
+  const ranked = (tagged.length ? tagged : candidates).sort(
+    (left, right) => left.distance - right.distance
+  );
+
+  return ranked[0] ?? null;
 }
 
 export { CALIBRATION_STORAGE_KEY, DEFAULT_QUATERNION_TOLERANCE };

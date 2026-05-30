@@ -5,6 +5,7 @@ import {
   extractQuaternion,
   findMatchingView,
   formatQuaternion,
+  isInactiveProbeTag,
   loadCalibrations,
   normalizeProbeReading
 } from "../lib/probeMatching.js";
@@ -80,9 +81,30 @@ export default function Training({ setMode }) {
   useEffect(() => {
     const probeInput = getProbeInput();
 
+    function clearMatchedProbe(status) {
+      setProbeReading(null);
+      setMatchedViewId(null);
+      setMatchedCalibration(null);
+      setProbeStatus(status);
+    }
+
     function applyProbeReading(reading) {
       const normalized = normalizeProbeReading(reading);
       setProbeReading(normalized);
+
+      if (!normalized) {
+        setMatchedViewId(null);
+        setMatchedCalibration(null);
+        setProbeStatus("Waiting for live probe input.");
+        return;
+      }
+
+      if (isInactiveProbeTag(normalized.tag)) {
+        setMatchedViewId(null);
+        setMatchedCalibration(null);
+        setProbeStatus("No active probe position detected.");
+        return;
+      }
 
       const calibrations = loadCalibrations();
       const match = findMatchingView(reading, calibrations, views);
@@ -107,7 +129,12 @@ export default function Training({ setMode }) {
     const unsubscribeStatus =
       probeInput && typeof probeInput.onStatus === "function"
         ? probeInput.onStatus((message) => {
-            setProbeStatus(String(message || "Serial status updated."));
+            const nextStatus = String(message || "Serial status updated.");
+            setProbeStatus(nextStatus);
+
+            if (isInactiveProbeStatus(nextStatus)) {
+              clearMatchedProbe(nextStatus);
+            }
           })
         : null;
 
@@ -378,4 +405,10 @@ function getHotspotOptionPool() {
     .flatMap((view) => view.hotspots ?? [])
     .map((spot) => spot.label)
     .filter((label, index, labels) => labels.indexOf(label) === index);
+}
+
+function isInactiveProbeStatus(status) {
+  return /choose a detected serial port|no com port found|serial bridge unavailable|serial closed|serial init failed|serial port selection failed/i.test(
+    status
+  );
 }

@@ -3,9 +3,12 @@ const browserSubscribers = {
   status: new Set()
 };
 
+const STALE_READING_MS = 2000;
+
 let pollTimer = null;
 let lastReadingKey = "";
 let lastStatus = "";
+let staleReadingNotified = false;
 
 export function getProbeInput() {
   if (typeof window === "undefined") return null;
@@ -81,7 +84,7 @@ async function pollProbeState() {
 
     emitStatus(payload.status);
 
-    if (payload.reading) {
+    if (payload.reading && isFreshReading(payload.reading)) {
       const readingKey = [
         payload.reading.ts,
         payload.reading.sequence,
@@ -91,12 +94,28 @@ async function pollProbeState() {
 
       if (readingKey && readingKey !== lastReadingKey) {
         lastReadingKey = readingKey;
+        staleReadingNotified = false;
         browserSubscribers.reading.forEach((callback) => callback(payload.reading));
       }
+
+      return;
+    }
+
+    if (lastReadingKey && !staleReadingNotified) {
+      lastReadingKey = "";
+      staleReadingNotified = true;
+      browserSubscribers.reading.forEach((callback) => callback(null));
     }
   } catch (error) {
     emitStatus(`Serial bridge unavailable: ${error?.message || error}`);
   }
+}
+
+function isFreshReading(reading) {
+  const timestamp = Number(reading?.ts);
+  if (!Number.isFinite(timestamp)) return true;
+
+  return Date.now() - timestamp <= STALE_READING_MS;
 }
 
 async function readJsonResponse(response) {
