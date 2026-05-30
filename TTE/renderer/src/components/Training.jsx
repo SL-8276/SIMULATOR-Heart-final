@@ -8,6 +8,7 @@ import {
   loadCalibrations,
   normalizeProbeReading
 } from "../lib/probeMatching.js";
+import { getProbeInput } from "../lib/probeInput.js";
 import { MediaImage, MediaVideo } from "./ReferenceMedia.jsx";
 import { TrainingHotspotVideo } from "./TrainingHotspotMedia.jsx";
 
@@ -77,6 +78,8 @@ export default function Training({ setMode }) {
   }, [matchedCalibration, probeStatus]);
 
   useEffect(() => {
+    const probeInput = getProbeInput();
+
     function applyProbeReading(reading) {
       const normalized = normalizeProbeReading(reading);
       setProbeReading(normalized);
@@ -96,18 +99,31 @@ export default function Training({ setMode }) {
       setProbeStatus("No calibrated view matched the current probe tag and quaternion.");
     }
 
-    const unsubscribe =
-      window.probeInput && typeof window.probeInput.onReading === "function"
-        ? window.probeInput.onReading(applyProbeReading)
+    const unsubscribeReading =
+      probeInput && typeof probeInput.onReading === "function"
+        ? probeInput.onReading(applyProbeReading)
         : null;
 
-    if (!unsubscribe) {
-      setProbeStatus("Waiting for probe input. No probe-reading event has been received yet.");
+    const unsubscribeStatus =
+      probeInput && typeof probeInput.onStatus === "function"
+        ? probeInput.onStatus((message) => {
+            setProbeStatus(String(message || "Serial status updated."));
+          })
+        : null;
+
+    if (!unsubscribeReading) {
+      setProbeStatus("Probe input bridge unavailable. Choose a COM port in Calibration Mode first.");
+    } else {
+      setProbeStatus("Waiting for probe input from the selected COM port.");
     }
 
     return () => {
-      if (typeof unsubscribe === "function") {
-        unsubscribe();
+      if (typeof unsubscribeReading === "function") {
+        unsubscribeReading();
+      }
+
+      if (typeof unsubscribeStatus === "function") {
+        unsubscribeStatus();
       }
     };
   }, []);
