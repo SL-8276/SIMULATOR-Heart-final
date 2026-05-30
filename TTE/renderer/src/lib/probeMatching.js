@@ -145,12 +145,7 @@ export function findMatchingView(reading, calibrations, views) {
 
   if (exact.length) return exact[0];
 
-  const tagged = candidates.filter((candidate) => normalized.tag && normalizeTag(candidate.calibration.tag) === normalized.tag);
-  const ranked = (tagged.length ? tagged : candidates).sort(
-    (left, right) => left.distance - right.distance
-  );
-
-  return ranked[0] ?? null;
+  return null;
 }
 
 export { CALIBRATION_STORAGE_KEY, DEFAULT_QUATERNION_TOLERANCE };
