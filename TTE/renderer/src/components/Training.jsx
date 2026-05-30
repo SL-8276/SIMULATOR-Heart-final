@@ -1,7 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { views } from "../../../data/tteData.js";
 import { excludedTrainingViewIds, trainingViewOverrides } from "../data/trainingHotspots.js";
-import { MediaImage } from "./ReferenceMedia.jsx";
+import {
+  extractQuaternion,
+  findMatchingView,
+  formatQuaternion,
+  isInactiveProbeTag,
+  loadCalibrations,
+  normalizeProbeReading
+} from "../lib/probeMatching.js";
+import { getProbeInput } from "../lib/probeInput.js";
+import { MediaImage, MediaVideo } from "./ReferenceMedia.jsx";
 import { TrainingHotspotVideo } from "./TrainingHotspotMedia.jsx";
 
 const trainingViews = views
@@ -16,6 +25,10 @@ export default function Training({ setMode }) {
   const [search, setSearch] = useState("");
   const [selectedViewName, setSelectedViewName] = useState("");
   const [currentId, setCurrentId] = useState(trainingViews[0]?.id ?? 1);
+  const [probeReading, setProbeReading] = useState(null);
+  const [matchedViewId, setMatchedViewId] = useState(null);
+  const [probeStatus, setProbeStatus] = useState("Waiting for probe input.");
+  const [matchedCalibration, setMatchedCalibration] = useState(null);
 
   const filteredViews = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -40,6 +53,107 @@ export default function Training({ setMode }) {
   }, [currentId, filteredViews]);
 
   const hotspotOptionPool = useMemo(() => getHotspotOptionPool(), []);
+
+  const matchedProbeView = useMemo(() => {
+    return views.find((view) => view.id === matchedViewId) ?? null;
+  }, [matchedViewId]);
+
+  const readingLabel = useMemo(() => {
+    if (!probeReading) return "No probe data received yet";
+
+    const parts = [];
+    if (probeReading.rawTag) parts.push(`Tag: ${probeReading.rawTag}`);
+    const quaternionLabel = formatQuaternion(extractQuaternion(probeReading));
+    if (quaternionLabel) parts.push(quaternionLabel);
+    if (probeReading.button !== undefined) parts.push(`Button: ${probeReading.button}`);
+    if (probeReading.sequence !== undefined) parts.push(`Seq: ${probeReading.sequence}`);
+    return parts.join(" | ") || "Probe data received";
+  }, [probeReading]);
+
+  const savedCalibrationLabel = useMemo(() => {
+    if (!matchedCalibration) return probeStatus;
+
+    return `${probeStatus} Saved tag: ${matchedCalibration.tag || "None"} | ${formatQuaternion(
+      extractQuaternion(matchedCalibration)
+    )}`;
+  }, [matchedCalibration, probeStatus]);
+
+  useEffect(() => {
+    const probeInput = getProbeInput();
+
+    function clearMatchedProbe(status) {
+      setProbeReading(null);
+      setMatchedViewId(null);
+      setMatchedCalibration(null);
+      setProbeStatus(status);
+    }
+
+    function applyProbeReading(reading) {
+      const normalized = normalizeProbeReading(reading);
+      setProbeReading(normalized);
+
+      if (!normalized) {
+        setMatchedViewId(null);
+        setMatchedCalibration(null);
+        setProbeStatus("Waiting for live probe input.");
+        return;
+      }
+
+      if (isInactiveProbeTag(normalized.tag)) {
+        setMatchedViewId(null);
+        setMatchedCalibration(null);
+        setProbeStatus("No active probe position detected.");
+        return;
+      }
+
+      const calibrations = loadCalibrations();
+      const match = findMatchingView(reading, calibrations, views);
+
+      if (match) {
+        setMatchedViewId(match.view.id);
+        setMatchedCalibration(match.calibration);
+        setProbeStatus("Matched probe input with the closest calibrated TTE view.");
+        return;
+      }
+
+      setMatchedViewId(null);
+      setMatchedCalibration(null);
+      setProbeStatus("No calibrated view matched the current probe tag and quaternion.");
+    }
+
+    const unsubscribeReading =
+      probeInput && typeof probeInput.onReading === "function"
+        ? probeInput.onReading(applyProbeReading)
+        : null;
+
+    const unsubscribeStatus =
+      probeInput && typeof probeInput.onStatus === "function"
+        ? probeInput.onStatus((message) => {
+            const nextStatus = String(message || "Serial status updated.");
+            setProbeStatus(nextStatus);
+
+            if (isInactiveProbeStatus(nextStatus)) {
+              clearMatchedProbe(nextStatus);
+            }
+          })
+        : null;
+
+    if (!unsubscribeReading) {
+      setProbeStatus("Probe input bridge unavailable. Choose a COM port in Calibration Mode first.");
+    } else {
+      setProbeStatus("Waiting for probe input from the selected COM port.");
+    }
+
+    return () => {
+      if (typeof unsubscribeReading === "function") {
+        unsubscribeReading();
+      }
+
+      if (typeof unsubscribeStatus === "function") {
+        unsubscribeStatus();
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!selectedViewName) return;
@@ -111,11 +225,70 @@ export default function Training({ setMode }) {
         <div className="tte-ref-topband">
           <div className="tte-ref-brand-wrap">
             <div className="tte-ref-brand-title">Probe Position</div>
+            <div className="tte-ref-brand-subtitle">
+              Match live probe input against the calibration values saved with Set
+            </div>
           </div>
         </div>
 
         <div className="tte-ref-content">
-          <div className="tte-ref-card training-empty-card" />
+          <div className="tte-ref-card">
+            <div className="tte-ref-card-titlebar">
+              <div className="tte-ref-title-left">
+                <span className="tte-ref-view-title">
+                  {matchedProbeView ? matchedProbeView.view_name : "Awaiting Matched View"}
+                </span>
+                <span className="tte-ref-green-pill">
+                  {matchedProbeView?.mnemonic ?? "Probe"}
+                </span>
+              </div>
+
+              <span className="tte-ref-blue-pill">
+                {matchedProbeView?.category ?? "Training"}
+              </span>
+            </div>
+
+            <div className="tte-ref-main-body">
+              <div className="tte-ref-media-grid">
+                <div className="tte-ref-media-col">
+                  <div className="tte-ref-section-label">PROBE POSITION IMAGE</div>
+                  <div className="tte-ref-media-frame">
+                    <MediaImage
+                      src={matchedProbeView?.image}
+                      alt={matchedProbeView?.view_name ?? "Matched TTE view"}
+                      fallbackTitle="Waiting for a calibrated probe match"
+                    />
+                  </div>
+                </div>
+
+                <div className="tte-ref-media-col">
+                  <div className="tte-ref-section-label">ECHOCARDIOGRAPHY VIDEO</div>
+                  <div className="tte-ref-media-frame">
+                    <MediaVideo
+                      src={matchedProbeView?.video}
+                      fallbackTitle="Matched echocardiography video will appear here"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="tte-ref-details-grid">
+                <div className="tte-ref-detail-block">
+                  <div className="tte-ref-detail-label">PROBE INPUT</div>
+                  <div className="tte-ref-detail-value">{readingLabel}</div>
+                </div>
+
+                <div className="tte-ref-detail-block">
+                  <div className="tte-ref-detail-label">MATCH STATUS</div>
+                  <div className="tte-ref-detail-value">
+                    {matchedProbeView && matchedCalibration
+                      ? savedCalibrationLabel
+                      : probeStatus}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           <div className="tte-ref-bottom-row tte-ref-bottom-row-between">
             <button className="tte-ref-secondary-btn" onClick={() => setWorkflow("menu")}>
@@ -232,4 +405,10 @@ function getHotspotOptionPool() {
     .flatMap((view) => view.hotspots ?? [])
     .map((spot) => spot.label)
     .filter((label, index, labels) => labels.indexOf(label) === index);
+}
+
+function isInactiveProbeStatus(status) {
+  return /choose a detected serial port|no com port found|serial bridge unavailable|serial closed|serial init failed|serial port selection failed/i.test(
+    status
+  );
 }

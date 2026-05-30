@@ -8,6 +8,7 @@ import {
   normalizeProbeReading,
   saveCalibration
 } from "../../lib/teeProbeMatching.js";
+import { getProbeInput } from "../../lib/probeInput.js";
 
 export default function Calibration({ setMode }) {
   const [selectedViewId, setSelectedViewId] = useState(views[0]?.id ?? 1);
@@ -34,16 +35,17 @@ export default function Calibration({ setMode }) {
   }, [probeReading]);
 
   useEffect(() => {
+    const probeInput = getProbeInput();
     const unsubscribeReading =
-      window.probeInput && typeof window.probeInput.onReading === "function"
-        ? window.probeInput.onReading((reading) => {
+      probeInput && typeof probeInput.onReading === "function"
+        ? probeInput.onReading((reading) => {
             setProbeReading(normalizeProbeReading(reading));
           })
         : null;
 
     const unsubscribeStatus =
-      window.probeInput && typeof window.probeInput.onStatus === "function"
-        ? window.probeInput.onStatus((message) => {
+      probeInput && typeof probeInput.onStatus === "function"
+        ? probeInput.onStatus((message) => {
             setSerialStatus(String(message || "Serial status updated."));
           })
         : null;
@@ -68,15 +70,27 @@ export default function Calibration({ setMode }) {
   }, []);
 
   async function refreshSerialPorts() {
-    if (!window.probeInput || typeof window.probeInput.listPorts !== "function") {
+    const probeInput = getProbeInput();
+    if (!probeInput || typeof probeInput.listPorts !== "function") {
       setSerialPorts([]);
+      setSerialStatus("Serial port enumeration unavailable.");
       return;
     }
 
     try {
-      const ports = await window.probeInput.listPorts();
-      setSerialPorts(Array.isArray(ports) ? ports : []);
+      const ports = await probeInput.listPorts();
+      const detectedPorts = Array.isArray(ports) ? ports.filter((port) => port?.path) : [];
+      setSerialPorts(detectedPorts);
+      setSelectedPort((currentPort) =>
+        detectedPorts.some((port) => port.path === currentPort) ? currentPort : ""
+      );
+      setSerialStatus(
+        detectedPorts.length
+          ? `Detected serial ports: ${detectedPorts.map((port) => port.path).join(", ")}`
+          : "No serial ports detected."
+      );
     } catch (error) {
+      setSerialPorts([]);
       setSerialStatus(`Serial port refresh failed: ${error?.message || error}`);
     }
   }
@@ -121,12 +135,20 @@ export default function Calibration({ setMode }) {
     const portPath = e.target.value;
     setSelectedPort(portPath);
 
-    if (!window.probeInput || typeof window.probeInput.selectPort !== "function") {
+    const probeInput = getProbeInput();
+    if (!probeInput || typeof probeInput.selectPort !== "function") {
+      setSerialStatus("Serial port selection unavailable.");
+      return;
+    }
+
+    if (!portPath) {
+      setSerialStatus("Choose a detected serial port.");
       return;
     }
 
     try {
-      await window.probeInput.selectPort(portPath);
+      const selected = await probeInput.selectPort(portPath);
+      setSerialStatus(`Selected ${selected || portPath}. Connecting with exact port ${selected || portPath}.`);
     } catch (error) {
       setSerialStatus(`Serial port selection failed: ${error?.message || error}`);
     }
@@ -208,7 +230,9 @@ export default function Calibration({ setMode }) {
                       onChange={handlePortChange}
                       aria-label="Select COM port"
                     >
-                      <option value="">COM</option>
+                      <option value="">
+                        {serialPorts.length ? "Select port" : "No ports detected"}
+                      </option>
                       {serialPorts.map((port) => (
                         <option key={port.path} value={port.path}>
                           {port.path}
