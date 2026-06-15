@@ -19,7 +19,7 @@ export const trainingViewOverrides = {
     image: "/assets/training/images/PlaxRVinEcho.png",
     video: "/assets/training/videos/PlaxRVin.mp4",
     hotspots: [
-      { id: "plax-rvin-rv", label: "RV", x: 55.42, y: 31.3, options: ["RV", "LV", "Aorta", "LA"] },
+      { id: "plax-rvin-rv", label: "RV", x: 55.42, y: 31.3, options: ["RV", "LV", "Aorta", "LAA"] },
       { id: "plax-rvin-ivc", label: "IVC", x: 71.95, y: 48.65, options: ["SVC", "IVC", "PV", "PA"] },
       { id: "plax-rvin-tv", label: "TV", x: 56.96, y: 51.98, options: ["TV", "PV", "MV", "AV"] },
       { id: "plax-rvin-ra", label: "RA", x: 62.55, y: 61.55, options: ["RA", "RV", "LA", "PA"] },
