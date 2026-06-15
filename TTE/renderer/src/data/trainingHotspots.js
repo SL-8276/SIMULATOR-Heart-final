@@ -3,7 +3,7 @@ export const excludedTrainingViewIds = [8, 15, 17, 20];
 export const trainingViewOverrides = {
   1: {
     image: "/assets/training/images/PlaxEcho.png",
-    video: "/assets/training/videos/plax.mp4",
+    video: "/assets/training/videos/plax.mp4", 
     hotspots: [
       { id: "plax-rv", label: "RV", x: 52.5, y: 29.73, options: ["RV", "LV", "Aorta", "LA"] },
       { id: "plax-lv", label: "LV", x: 40.97, y: 47.44, options: ["RV", "LV", "Aorta", "LA"] },
@@ -41,7 +41,7 @@ export const trainingViewOverrides = {
     image: "/assets/training/images/PsaxOutEcho.png",
     video: "/assets/training/videos/PsaxOut.mp4",
     hotspots: [
-      { id: "psax-out-1", label: "RV", x: 47.43, y: 28.16, options: ["RV", "LV", "PA", "Aorta"] },
+      { id: "psax-out-1", label: "RV", x: 47.43, y: 28.16, options: ["RV", "LV", "PA", "AortaA"] },
       { id: "psax-out-2", label: "TV", x: 40.9, y: 38.93, options: ["TV", "IAS", "MV", "PV"] },
       { id: "psax-out-3", label: "PV", x: 60.22, y: 38.93, options: ["PV", "AV", "TV", "MV"] },
       { id: "psax-out-4", label: "RA", x: 39.07, y: 47.48, options: ["LA", "RA", "RV", "PA"] },
