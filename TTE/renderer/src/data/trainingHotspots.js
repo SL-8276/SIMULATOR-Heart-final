@@ -19,11 +19,11 @@ export const trainingViewOverrides = {
     image: "/assets/training/images/PlaxRVinEcho.png",
     video: "/assets/training/videos/PlaxRVin.mp4",
     hotspots: [
-      { id: "plax-rvin-rv", label: "RV", x: 55.42, y: 31.3, options: ["RV", "LV", "Aorta", "LA"] },
-      { id: "plax-rvin-ivc", label: "IVC", x: 71.95, y: 48.65, options: ["SVC", "IVC", "PV", "PA"] },
-      { id: "plax-rvin-tv", label: "TV", x: 56.96, y: 51.98, options: ["TV", "PV", "MV", "AV"] },
-      { id: "plax-rvin-ra", label: "RA", x: 62.55, y: 61.55, options: ["RA", "RV", "LA", "PA"] },
-      { id: "plax-rvin-svc", label: "SVC", x: 57.85, y: 82.23, options: ["SVC", "IVC", "PV", "PA"] }
+      { id: "plax-rvin-lv", label: "LV", x: 55.42, y: 31.3, options: ["LV", "RV", "LA", "RA"] },
+      { id: "plax-rvin-tv", label: "TV", x: 71.95, y: 48.65, options: ["LV", "RV", "LA", "RA"] },
+      { id: "plax-rvin-svc", label: "SVC", x: 56.96, y: 51.98, options: ["LV", "RV", "LA", "RA"] },
+      { id: "plax-rvin-ra", label: "RA", x: 62.55, y: 61.55, options: ["LV", "RV", "LA", "RA"] },
+      { id: "plax-rvin-ivc", label: "IVC", x: 57.85, y: 82.23, options: ["LV", "RV", "LA", "RA"] }
     ]
   },
 
@@ -31,9 +31,9 @@ export const trainingViewOverrides = {
     image: "/assets/training/images/PlaxRVoutEcho.png",
     video: "/assets/training/videos/PlaxRVout.mp4",
     hotspots: [
-      { id: "plax-rvout-rv", label: "RVOT", x: 50.4, y: 29.55, options: ["RVOT", "PV", "Aorta", "LV"] },
+      { id: "plax-rvout-rvot", label: "RVOT", x: 50.4, y: 29.55, options: ["RVOT", "PV", "Aorta", "LV"] },
       { id: "plax-rvout-pv", label: "PV", x: 55.98, y: 35.61, options: ["PV", "TV", "LV", "AV"] },
-      { id: "plax-rvout-pa", label: "PA", x: 60.98, y: 47.07, options: ["RA", "PA", "Aorta", "AV"] }
+      { id: "plax-rvout-ra", label: "RA", x: 60.98, y: 47.07, options: ["RA", "PA", "Aorta", "AV"] }
     ]
   },
 
@@ -41,13 +41,14 @@ export const trainingViewOverrides = {
     image: "/assets/training/images/PsaxOutEcho.png",
     video: "/assets/training/videos/PsaxOut.mp4",
     hotspots: [
-      { id: "psax-out-1", label: "RV", x: 47.43, y: 28.16, options: ["RV", "LV", "PA", "Aorta"] },
-      { id: "psax-out-2", label: "TV", x: 40.9, y: 38.93, options: ["TV", "IAS", "MV", "PV"] },
-      { id: "psax-out-3", label: "PV", x: 60.22, y: 38.93, options: ["PV", "AV", "TV", "MV"] },
-      { id: "psax-out-4", label: "RA", x: 39.07, y: 47.48, options: ["LA", "RA", "RV", "PA"] },
-      { id: "psax-out-5", label: "PA", x: 61.33, y: 44.78, options: ["AV", "PV", "MV", "TV"] },
-      { id: "psax-out-6", label: "IAS", x: 41.67, y: 57.99, options: ["PA", "Aorta", "RV", "LV"] },
-      { id: "psax-out-7", label: "LA", x: 48.2, y: 63.5, options: ["IVS", "IAS", "TV", "PV"] }
+      { id: "psax-out-1", label: "RV", x: 47.43, y: 28.16, options: ["ALPM", "PMPM", "AML", "PML"] },
+      { id: "psax-out-2", label: "TV", x: 40.9, y: 38.93, options: ["ALPM", "PMPM", "AML", "PML"] },
+      { id: "psax-out-3", label: "PV", x: 60.22, y: 38.93, options: ["ALPM", "PMPM", "AML", "PML"] },
+      { id: "psax-out-4", label: "LA", x: 39.07, y: 47.48, options: ["ALPM", "PMPM", "AML", "PML"] },
+      { id: "psax-out-5", label: "SVC", x: 61.33, y: 44.78, options: ["ALPM", "PMPM", "AML", "PML"] },
+      { id: "psax-out-6", label: "PA", x: 41.67, y: 57.99, options: ["ALPM", "PMPM", "AML", "PML"] },
+      { id: "psax-out-7", label: "IVS", x: 48.2, y: 63.5, options: ["ALPM", "PMPM", "AML", "PML"] },
+      { id: "psax-out-8", label: "RA", x: 52.5, y: 70.0, options: ["ALPM", "PMPM", "AML", "PML"] }
     ]
   },
 
@@ -55,9 +56,9 @@ export const trainingViewOverrides = {
     image: "/assets/training/images/PsaxMVEcho.png",
     video: "/assets/training/videos/PsaxMV.mp4",
     hotspots: [
-      { id: "psax-mv-rv", label: "RV", x: 44.96, y: 32.71, options: ["LV", "RV", "Aorta", "PA"] },
-      { id: "psax-mv-aml", label: "AML", x: 51.5, y: 48.09, options: ["AML", "PML", "AV", "TV"] },
-      { id: "psax-mv-pml", label: "PML", x: 52.56, y: 63.48, options: ["PML", "AML", "AV", "TV"] }
+      { id: "psax-mv-1", label: "LV", x: 44.96, y: 32.71, options: ["LV", "RV", "Aorta", "PA"] },
+      { id: "psax-mv-2", label: "AML", x: 51.5, y: 48.09, options: ["AML", "PML", "AV", "TV"] },
+      { id: "psax-mv-3", label: "PML", x: 52.56, y: 63.48, options: ["PML", "AML", "AV", "TV"] }
     ]
   },
 
@@ -65,10 +66,10 @@ export const trainingViewOverrides = {
     image: "/assets/training/images/PsaxMidEcho.png",
     video: "/assets/training/videos/PsaxMid.mp4",
     hotspots: [
-      { id: "psax-mid-rv", label: "RV", x: 48.46, y: 26.41, options: ["LV", "RV", "Aorta", "PA"] },
-      { id: "psax-mid-pmpm", label: "PMPM", x: 49.66, y: 57.18, options: ["LV", "RV", "LA", "RA"] },
-      { id: "psax-mid-lv", label: "LV", x: 53.32, y: 43.55, options: ["ALPM", "PMPM", "AML", "PML"] },
-      { id: "psax-mid-alpm", label: "ALPM", x: 58.17, y: 49.4, options: ["ALPM", "PMPM", "AML", "PML"] }
+      { id: "psax-mid-1", label: "LV", x: 48.46, y: 26.41, options: ["LV", "RV", "Aorta", "PA"] },
+      { id: "psax-mid-2", label: "RV", x: 49.66, y: 57.18, options: ["LV", "RV", "LA", "RA"] },
+      { id: "psax-mid-3", label: "ALPM", x: 53.32, y: 43.55, options: ["ALPM", "PMPM", "AML", "PML"] },
+      { id: "psax-mid-4", label: "PMPM", x: 58.17, y: 49.4, options: ["ALPM", "PMPM", "AML", "PML"] }
     ]
   },
 
@@ -76,8 +77,8 @@ export const trainingViewOverrides = {
     image: "/assets/training/images/PsaxApexEcho.png",
     video: "/assets/training/videos/PsaxApex.mp4",
     hotspots: [
-      { id: "psax-apex-rv", label: "RV", x: 49.96, y: 27.35, options: ["LV", "RV", "Aorta", "PA"] },
-      { id: "psax-apex-lv", label: "LV", x: 54.82, y: 40.85, options: ["LV", "RV", "LA", "RA"] }
+      { id: "psax-apex-1", label: "LV", x: 49.96, y: 27.35, options: ["LV", "RV", "Aorta", "PA"] },
+      { id: "psax-apex-2", label: "RV", x: 54.82, y: 40.85, options: ["LV", "RV", "LA", "RA"] }
     ]
   },
 
@@ -86,13 +87,13 @@ export const trainingViewOverrides = {
     video: "/assets/training/videos/Apical4.mp4",
     hotspots: [
       { id: "apical4-1", label: "RV", x: 46.2, y: 43.5, options: ["LV", "RV", "Aorta", "PA"] },
-      { id: "apical4-2", label: "TV", x: 48.8, y: 61.5, options: ["LV", "RV", "LA", "RA"] },
-      { id: "apical4-3", label: "RA", x: 50.33, y: 78.37, options: ["MV", "TV", "PV", "AV"] },
-      { id: "apical4-4", label: "L PV", x: 55.19, y: 86.14, options: ["MV", "TV", "PV", "AV"] },
-      { id: "apical4-5", label: "LV", x: 56.34, y: 34.22, options: ["LPV", "RPV", "LPA", "RPA"] },
-      { id: "apical4-6", label: "MV", x: 55.8, y: 55.5, options: ["LV", "RV", "LA", "RA"] },
-      { id: "apical4-7", label: "LA", x: 59.03, y: 75.38, options: ["LV", "RV", "LA", "RA"] },
-      { id: "apical4-8", label: "R PV", x: 69.42, y: 66.75, options: ["LPV", "RPV", "LPA", "RPA"] }
+      { id: "apical4-2", label: "LV", x: 48.8, y: 61.5, options: ["LV", "RV", "LA", "RA"] },
+      { id: "apical4-3", label: "MV", x: 50.33, y: 78.37, options: ["MV", "TV", "PV", "AV"] },
+      { id: "apical4-4", label: "TV", x: 55.19, y: 86.14, options: ["MV", "TV", "PV", "AV"] },
+      { id: "apical4-5", label: "LPV", x: 56.34, y: 34.22, options: ["LPV", "RPV", "LPA", "RPA"] },
+      { id: "apical4-6", label: "LA", x: 55.8, y: 55.5, options: ["LV", "RV", "LA", "RA"] },
+      { id: "apical4-7", label: "RA", x: 59.03, y: 75.38, options: ["LV", "RV", "LA", "RA"] },
+      { id: "apical4-8", label: "RPV", x: 69.42, y: 66.75, options: ["LPV", "RPV", "LPA", "RPA"] }
     ]
   },
 
@@ -102,7 +103,7 @@ export const trainingViewOverrides = {
     hotspots: [
       { id: "apical5-1", label: "LV", x: 52.48, y: 27.39, options: ["LV", "RV", "Aorta", "PA"] },
       { id: "apical5-2", label: "RV", x: 44.52, y: 32.78, options: ["LV", "RV", "Aorta", "PA"] },
-      { id: "apical5-3", label: "RA", x: 44.2, y: 63.8, options: ["LA", "RA", "LV", "RV"] },
+      { id: "apical5-3", label: "LA", x: 44.2, y: 63.8, options: ["LA", "RA", "LV", "RV"] },
       { id: "apical5-4", label: "AV", x: 52.48, y: 67.77, options: ["AV", "PV", "MV", "TV"] },
       { id: "apical5-5", label: "Aorta", x: 50.85, y: 74.41, options: ["Aorta", "PA", "Pulm Vein", "LA"] }
     ]
@@ -114,7 +115,7 @@ export const trainingViewOverrides = {
     hotspots: [
       { id: "apical2-1", label: "AW", x: 62.64, y: 33.45, options: ["AW", "IW", "SW", "LW"] },
       { id: "apical2-2", label: "IW", x: 48.07, y: 40.21, options: ["AW", "IW", "SW", "LW"] },
-      { id: "apical2-3", label: "LV", x: 56.2, y: 40.21, options: ["RV", "LV", "LA", "RA"] },
+      { id: "apical2-3", label: "RV", x: 56.2, y: 40.21, options: ["RV", "LV", "LA", "RA"] },
       { id: "apical2-4", label: "MV", x: 57.78, y: 64.65, options: ["MV", "TV", "AV", "PV"] },
       { id: "apical2-5", label: "LA", x: 59.52, y: 78.16, options: ["MV", "TV", "AV", "PV"] }
     ]
@@ -124,9 +125,9 @@ export const trainingViewOverrides = {
     image: "/assets/training/images/ApicalLAXEcho.png",
     video: "/assets/training/videos/ApicalLAX.mp4",
     hotspots: [
-      { id: "apicallax-1", label: "LV", x: 51.46, y: 28.41, options: ["RV", "LV", "LA", "RA"] },
+      { id: "apicallax-1", label: "RV", x: 51.46, y: 28.41, options: ["RV", "LV", "LA", "RA"] },
       { id: "apicallax-2", label: "ASW", x: 61.18, y: 34.52, options: ["ASW", "ISW", "ILW", "ALW"] },
-      { id: "apicallax-3", label: "ILW", x: 45.65, y: 40.51, options: ["ASW", "ISW", "ILW", "ALW"] },
+      { id: "apicallax-3", label: "ISW", x: 45.65, y: 40.51, options: ["ASW", "ISW", "ILW", "ALW"] },
       { id: "apicallax-4", label: "RVOT", x: 67.71, y: 37.81, options: ["RVOT", "LVOT", "Aorta", "LV"] },
       { id: "apicallax-5", label: "MV", x: 60.12, y: 57.99, options: ["MV", "TV", "AV", "PV"] },
       { id: "apicallax-6", label: "AV", x: 67.71, y: 53.58, options: ["MV", "TV", "AV", "PV"] },
