@@ -290,16 +290,7 @@ function getQuizPanelStyle(point, stageSize) {
 function buildOptions(activeSpot, hotspots, optionPool) {
   if (Array.isArray(activeSpot.options) && activeSpot.options.length) {
     const customOptions = uniqueLabels(activeSpot.options);
-    const visibleOptions = customOptions.slice(0, 4);
-
-    return visibleOptions.includes(activeSpot.label)
-      ? visibleOptions
-      : [
-          activeSpot.label,
-          ...customOptions
-            .filter((option) => option !== activeSpot.label)
-            .slice(0, 3)
-        ];
+    return customOptions.slice(0, 4);
   }
 
   const labels = uniqueLabels([
