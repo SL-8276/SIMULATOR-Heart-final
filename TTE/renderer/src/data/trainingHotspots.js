@@ -71,21 +71,21 @@ export const trainingViewOverrides = {
       label: "RV",
       x: 48.46,
       y: 26.41,
-      options: ["LV", "RV", "Aorta", "PA"]
+      options: ["LV", "RV", "LA", "RA"]
     },
     {
       id: "psax-mid-pmpm",
       label: "PMPM",
       x: 49.66,
       y: 57.18,
-      options: ["LV", "RV", "LA", "RA"]
+      options: ["ALPM", "PMPM", "AML", "PML"]
     },
     {
       id: "psax-mid-lv",
       label: "LV",
       x: 53.32,
       y: 43.55,
-      options: ["LV", "RV", "Aorta", "PA"]
+      options: ["LV", "RV", "LA", "RA"]
     },
     {
       id: "psax-mid-alpm",
@@ -110,12 +110,12 @@ export const trainingViewOverrides = {
     image: "/assets/training/images/Apical4Echo.png",
     video: "/assets/training/videos/Apical4.mp4",
     hotspots: [
-      { id: "apical4-1", label: "RV", x: 46.2, y: 43.5, options: ["LV", "RV", "Aorta", "PA"] },
-      { id: "apical4-2", label: "LV", x: 48.8, y: 61.5, options: ["LV", "RV", "LA", "RA"] },
-      { id: "apical4-3", label: "MV", x: 50.33, y: 78.37, options: ["MV", "TV", "PV", "AV"] },
-      { id: "apical4-4", label: "TV", x: 55.19, y: 86.14, options: ["MV", "TV", "PV", "AV"] },
-      { id: "apical4-5", label: "LPV", x: 56.34, y: 34.22, options: ["LPV", "RPV", "LPA", "RPA"] },
-      { id: "apical4-6", label: "LA", x: 55.8, y: 55.5, options: ["LV", "RV", "LA", "RA"] },
+      { id: "apical4-1", label: "RV", x: 46.2, y: 43.5, options: ["LV", "RV", "LA", "RA"] },
+      { id: "apical4-2", label: "LV", x: 43.8, y: 56.0, options: ["MV", "TV", "PV", "AV"] },
+      { id: "apical4-3", label: "MV", x: 50.8, y: 70.5, options: ["LV", "RV", "LA", "RA"] },
+      { id: "apical4-4", label: "TV", x: 55.19, y: 86.14, options: ["LPV", "RPV", "LPA", "RPA"] },
+      { id: "apical4-5", label: "LPV", x: 56.34, y: 34.22, options: ["LV", "RV", "Aorta", "PA"] },
+      { id: "apical4-6", label: "LA", x: 57.8, y: 68.0, options: ["MV", "TV", "PV", "AV"] },
       { id: "apical4-7", label: "RA", x: 59.03, y: 75.38, options: ["LV", "RV", "LA", "RA"] },
       { id: "apical4-8", label: "RPV", x: 69.42, y: 66.75, options: ["LPV", "RPV", "LPA", "RPA"] }
     ]
