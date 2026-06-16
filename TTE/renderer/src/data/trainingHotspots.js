@@ -62,16 +62,40 @@ export const trainingViewOverrides = {
     ]
   },
 
-  6: {
-    image: "/assets/training/images/PsaxMidEcho.png",
-    video: "/assets/training/videos/PsaxMid.mp4",
-    hotspots: [
-      { id: "psax-mid-1", label: "LV", x: 48.46, y: 26.41, options: ["LV", "RV", "Aorta", "PA"] },
-      { id: "psax-mid-2", label: "RV", x: 49.66, y: 57.18, options: ["LV", "RV", "LA", "RA"] },
-      { id: "psax-mid-3", label: "ALPM", x: 53.32, y: 43.55, options: ["ALPM", "PMPM", "AML", "PML"] },
-      { id: "psax-mid-4", label: "PMPM", x: 58.17, y: 49.4, options: ["ALPM", "PMPM", "AML", "PML"] }
-    ]
-  },
+6: {
+  image: "/assets/training/images/PsaxMidEcho.png",
+  video: "/assets/training/videos/PsaxMid.mp4",
+  hotspots: [
+    {
+      id: "psax-mid-rv",
+      label: "RV",
+      x: 48.46,
+      y: 26.41,
+      options: ["LV", "RV", "Aorta", "PA"]
+    },
+    {
+      id: "psax-mid-pmpm",
+      label: "PMPM",
+      x: 49.66,
+      y: 57.18,
+      options: ["LV", "RV", "LA", "RA"]
+    },
+    {
+      id: "psax-mid-lv",
+      label: "LV",
+      x: 53.32,
+      y: 43.55,
+      options: ["LV", "RV", "Aorta", "PA"]
+    },
+    {
+      id: "psax-mid-alpm",
+      label: "ALPM",
+      x: 58.17,
+      y: 49.4,
+      options: ["ALPM", "PMPM", "AML", "PML"]
+    }
+  ]
+},
 
   7: {
     image: "/assets/training/images/PsaxApexEcho.png",
