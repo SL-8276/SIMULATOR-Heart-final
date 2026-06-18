@@ -1,5 +1,44 @@
 export const excludedTrainingViewIds = [8, 15, 17, 20];
 
+export const supplementalTrainingHotspotsByViewId = {
+  1: [
+    { id: "plax-extra-rcc", label: "RCC", x: 55.0, y: 50.0, options: ["RCC", "NCC", "LCC", "AV"] },
+    { id: "plax-extra-lcc-ncc", label: "LCC/NCC", x: 54.74, y: 68.7, options: ["RCC", "LCC/NCC", "AV", "Aorta"] },
+    { id: "plax-extra-aml", label: "AML", x: 51.15, y: 47.18, options: ["AML", "PML", "MV", "AV"] },
+    { id: "plax-extra-pml", label: "PML", x: 49.74, y: 66.38, options: ["PML", "AML", "MV", "AV"] }
+  ],
+  4: [
+    { id: "psax-out-extra-rpa", label: "RPA", x: 47.98, y: 75.55, options: ["RPA", "LPA", "MPA", "PV"] },
+    { id: "psax-out-extra-lpa", label: "LPA", x: 60.84, y: 75.59, options: ["RPA", "LPA", "MPA", "PV"] },
+    { id: "psax-out-extra-mpa", label: "MPA", x: 54.91, y: 60.38, options: ["RPA", "LPA", "MPA", "PV"] },
+    { id: "psax-out-extra-rcc", label: "RCC", x: 51.18, y: 47.7, options: ["RCC", "NCC", "LCC", "AV"] },
+    { id: "psax-out-extra-ncc", label: "NCC", x: 45.0, y: 55.3, options: ["RCC", "NCC", "LCC", "AV"] },
+    { id: "psax-out-extra-lcc", label: "LCC", x: 55.0, y: 55.72, options: ["RCC", "NCC", "LCC", "AV"] }
+  ],
+  9: [
+    { id: "apical4-extra-cs", label: "CS", x: 57.95, y: 70.66, options: ["CS", "LA", "LV", "RA"] }
+  ],
+  18: [
+    { id: "subivc-extra-liver", label: "Liver", x: 48.72, y: 37.76, options: ["Liver", "IVC", "Aorta", "RA"] },
+    { id: "subivc-extra-aorta", label: "Aorta", x: 43.62, y: 57.54, options: ["Aorta", "IVC", "Liver", "RA"] }
+  ],
+  19: [
+    { id: "suplax-extra-bca", label: "BCA", x: 56.47, y: 25.75, options: ["BCA", "LCC", "LSCA", "Arch"] }
+  ],
+  "teaching-psax-pa-bifurcation": [
+    { id: "teach-psax-pa-bifurcation-1", label: "RV", x: 45.09, y: 40.1, options: ["RV", "LV", "RA", "PA"] },
+    { id: "teach-psax-pa-bifurcation-2", label: "RPA", x: 47.98, y: 75.55, options: ["RPA", "LPA", "MPA", "PV"] },
+    { id: "teach-psax-pa-bifurcation-3", label: "LPA", x: 60.84, y: 75.59, options: ["RPA", "LPA", "MPA", "PV"] },
+    { id: "teach-psax-pa-bifurcation-4", label: "MPA", x: 54.91, y: 60.38, options: ["RPA", "LPA", "MPA", "PV"] },
+    { id: "teach-psax-pa-bifurcation-5", label: "PV", x: 57.8, y: 50.0, options: ["RPA", "LPA", "MPA", "PV"] }
+  ],
+  "teaching-subcostal-ivc-longaxis": [
+    { id: "teach-subcostal-ivc-longaxis-1", label: "Liver", x: 48.72, y: 37.76, options: ["Liver", "IVC", "Aorta", "RA"] },
+    { id: "teach-subcostal-ivc-longaxis-2", label: "IVC", x: 49.62, y: 64.35, options: ["IVC", "Aorta", "Liver", "RA"] },
+    { id: "teach-subcostal-ivc-longaxis-3", label: "RA", x: 59.87, y: 66.39, options: ["RA", "RV", "LA", "IAS"] }
+  ]
+};
+
 export const trainingViewOverrides = {
   1: {
     image: "/assets/training/images/PlaxEcho.png",
@@ -164,12 +203,12 @@ export const trainingViewOverrides = {
     image: "/assets/training/images/Sub4Echo.png",
     video: "/assets/training/videos/Sub4.mp4",
     hotspots: [
-      { id: "sub4-tv", label: "TV", x: 49.72, y: 42.09 },
-      { id: "sub4-mv", label: "MV", x: 55.83, y: 54.05 },
-      { id: "sub4-ra", label: "RA", x: 47.22, y: 48.37 },
-      { id: "sub4-la", label: "LA", x: 50.97, y: 59.52 },
-      { id: "sub4-lv", label: "LV", x: 59.24, y: 46.87 },
-      { id: "sub4-rv", label: "RV", x: 52.12, y: 38.16 }
+      { id: "sub4-tv", label: "TV", x: 49.72, y: 42.09, options: ["MV", "TV", "PV", "AV"] },
+      { id: "sub4-mv", label: "MV", x: 55.83, y: 54.05, options: ["MV", "TV", "PV", "AV"] },
+      { id: "sub4-ra", label: "RA", x: 47.22, y: 48.37, options: ["LV", "RV", "LA", "RA"] },
+      { id: "sub4-la", label: "LA", x: 50.97, y: 59.52, options: ["LV", "RV", "LA", "RA"] },
+      { id: "sub4-lv", label: "LV", x: 59.24, y: 46.87, options: ["LV", "RV", "LA", "RA"] },
+      { id: "sub4-rv", label: "RV", x: 52.12, y: 38.16, options: ["LV", "RV", "LA", "RA"] }
     ]
   },
 
@@ -177,10 +216,10 @@ export const trainingViewOverrides = {
     image: "/assets/training/images/SubOutEcho.png",
     video: "/assets/training/videos/SubOut.mp4",
     hotspots: [
-      { id: "subout-ra", label: "RA", x: 59.96, y: 52.87 },
-      { id: "subout-la", label: "LA", x: 65.42, y: 65.75 },
-      { id: "subout-av", label: "AV", x: 65.85, y: 55.25 },
-      { id: "subout-pa", label: "PA", x: 71.74, y: 56.25 },
+      { id: "subout-ra", label: "RA", x: 59.96, y: 52.87, options: ["RV", "RA", "PA", "LA"] },
+      { id: "subout-la", label: "LA", x: 65.42, y: 65.75, options: ["RA", "LA", "RV", "PA"] },
+      { id: "subout-av", label: "AV", x: 65.85, y: 55.25, options: ["AV", "PV", "MV", "TV"] },
+      { id: "subout-pa", label: "PA", x: 71.74, y: 56.25, options: ["PA", "LA", "RA", "RV"] },
       { id: "subout-rv", label: "RV", x: 64.82, y: 41.17 }
     ]
   },
@@ -198,9 +237,9 @@ export const trainingViewOverrides = {
     image: "/assets/training/images/SubIVCEcho.png",
     video: "/assets/training/videos/SubIVC.mp4",
     hotspots: [
-      { id: "subivc-ra", label: "RA", x: 54.53, y: 56.59 },
-      { id: "subivc-ivc", label: "IVC", x: 40.16, y: 53.41 },
-      { id: "subivc-hv", label: "HV", x: 44.43, y: 43.29 }
+      { id: "subivc-ra", label: "RA", x: 54.53, y: 56.59, options: ["RA", "LA", "LV", "RV"] },
+      { id: "subivc-ivc", label: "IVC", x: 40.16, y: 53.41, options: ["Hepatic vein", "IVC", "Portal vein", "Aorta"] },
+      { id: "subivc-hv", label: "Hepatic vein", x: 44.43, y: 43.29, options: ["Hepatic vein", "IVC", "Portal vein", "Aorta"] }
     ]
   },
 
@@ -208,10 +247,10 @@ export const trainingViewOverrides = {
     image: "/assets/training/images/SupLAXEcho.png",
     video: "/assets/training/videos/SupLAX.mp4",
     hotspots: [
-      { id: "suplax-lcc", label: "LCC", x: 60.03, y: 28.24 },
-      { id: "suplax-lsca", label: "LSCA", x: 61.73, y: 38.74 },
-      { id: "suplax-dta", label: "DTA", x: 60.03, y: 57.74 },
-      { id: "suplax-arch", label: "Arch", x: 53.44, y: 35.74 }
+      { id: "suplax-lcc", label: "LCC", x: 60.03, y: 28.24, options: ["LCC", "BCA", "LSCA", "Arch"] },
+      { id: "suplax-lsca", label: "LSCA", x: 61.73, y: 38.74, options: ["LCC", "BCA", "LSCA", "Arch"] },
+      { id: "suplax-dta", label: "DTA", x: 60.03, y: 57.74, options: ["Arch", "DTA", "LSCA", "PA"] },
+      { id: "suplax-arch", label: "Arch", x: 53.44, y: 35.74, options: ["LCC", "BCA", "LSCA", "Arch"] }
     ]
   }
 };

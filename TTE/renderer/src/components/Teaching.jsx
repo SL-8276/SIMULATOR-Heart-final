@@ -1,12 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 import { views } from "../../../data/tteData.js";
-import { teachingSubviewsByViewId } from "../data/teachingSubviews.js";
+import {
+  teachingExtraViews,
+  teachingSubviewsByViewId
+} from "../data/teachingSubviews.js";
 import { MediaImage, MediaVideo, MediaVideoSnapshot } from "./ReferenceMedia.jsx";
+
+const teachingViews = views.concat(teachingExtraViews);
 
 export default function Teaching({ setMode }) {
   const [search, setSearch] = useState("");
   const [selectedViewName, setSelectedViewName] = useState("");
-  const [currentId, setCurrentId] = useState(views[0]?.id ?? 1);
+  const [currentId, setCurrentId] = useState(teachingViews[0]?.id ?? 1);
   const [mediaMode, setMediaMode] = useState("video");
   const [selectedSubviewId, setSelectedSubviewId] = useState("");
   const isStructureMode = mediaMode === "features";
@@ -14,9 +19,9 @@ export default function Teaching({ setMode }) {
   const filteredViews = useMemo(() => {
     const q = search.trim().toLowerCase();
 
-    if (!q) return views;
+    if (!q) return teachingViews;
 
-    return views.filter((view) => {
+    return teachingViews.filter((view) => {
       return (
         view.view_name.toLowerCase().includes(q) ||
         view.mnemonic.toLowerCase().includes(q) ||
@@ -26,7 +31,7 @@ export default function Teaching({ setMode }) {
   }, [search]);
 
   const currentView = useMemo(() => {
-    return views.find((view) => view.id === currentId) ?? views[0];
+    return teachingViews.find((view) => view.id === currentId) ?? teachingViews[0];
   }, [currentId]);
 
   const currentSubviews = useMemo(() => {
@@ -40,16 +45,11 @@ export default function Teaching({ setMode }) {
   }, [currentSubviews, selectedSubviewId]);
 
   const activeEchoMedia = activeSubview ?? currentView;
-
-  const activeMediaMask =
-    mediaMode === "video"
-      ? activeSubview?.video_mask ?? (!activeSubview ? currentView?.video_mask : "")
-      : activeSubview?.structure_video_mask ??
-        (!activeSubview ? currentView?.structure_video_mask : "");
+  const hasActiveVideo = Boolean(activeEchoMedia?.video);
 
   useEffect(() => {
     if (!selectedViewName) return;
-    const selected = views.find((view) => view.view_name === selectedViewName);
+    const selected = teachingViews.find((view) => view.view_name === selectedViewName);
     if (selected) {
       setCurrentId(selected.id);
     }
@@ -60,11 +60,17 @@ export default function Teaching({ setMode }) {
     setSelectedSubviewId("");
   }, [currentId]);
 
+  useEffect(() => {
+    if (!hasActiveVideo && activeSubview?.labelled_image) {
+      setMediaMode("features");
+    }
+  }, [activeSubview, hasActiveVideo]);
+
   function handleFilteredSelectChange(e) {
     const value = e.target.value;
     setSelectedViewName(value);
 
-    const selected = views.find((view) => view.view_name === value);
+    const selected = teachingViews.find((view) => view.view_name === value);
     if (selected) {
       setCurrentId(selected.id);
     }
@@ -117,19 +123,29 @@ export default function Teaching({ setMode }) {
             </div>
 
             {currentSubviews.length ? (
-              <select
-                className="tte-ref-subview-select"
-                value={selectedSubviewId}
-                onChange={(e) => setSelectedSubviewId(e.target.value)}
-                aria-label="Select teaching subview"
-              >
-                <option value="">Main view</option>
+              <div className="tte-ref-subview-pills" aria-label="Select teaching subview">
+                <button
+                  type="button"
+                  className={`tte-ref-subview-pill${
+                    selectedSubviewId ? "" : " is-active"
+                  }`}
+                  onClick={() => setSelectedSubviewId("")}
+                >
+                  Main view
+                </button>
                 {currentSubviews.map((subview) => (
-                  <option key={subview.id} value={subview.id}>
+                  <button
+                    key={subview.id}
+                    type="button"
+                    className={`tte-ref-subview-pill${
+                      selectedSubviewId === subview.id ? " is-active" : ""
+                    }`}
+                    onClick={() => setSelectedSubviewId(subview.id)}
+                  >
                     {subview.view_name}
-                  </option>
+                  </button>
                 ))}
-              </select>
+              </div>
             ) : null}
 
             <span className="tte-ref-blue-pill">{currentView.category}</span>
@@ -158,23 +174,19 @@ export default function Teaching({ setMode }) {
                     onChange={(e) => setMediaMode(e.target.value)}
                     aria-label="Select echocardiography media display"
                   >
-                    <option value="video">Echocardiography video</option>
+                    {hasActiveVideo ? (
+                      <option value="video">Echocardiography video</option>
+                    ) : null}
                     <option value="features">Identify the structure</option>
                   </select>
                 ) : null}
-                <div
-                  className={`tte-ref-media-frame${
-                    activeMediaMask
-                      ? ` tte-ref-media-frame-mask-${activeMediaMask}`
-                      : ""
-                  }`}
-                >
+                <div className="tte-ref-media-frame">
                   {mediaMode === "video" ? (
                     <MediaVideo src={activeEchoMedia.video} />
-                  ) : activeSubview?.labelled_image ? (
+                  ) : activeEchoMedia?.labelled_image ? (
                     <MediaImage
-                      src={activeSubview.labelled_image}
-                      alt={`${activeSubview.view_name} identify structure`}
+                      src={activeEchoMedia.labelled_image}
+                      alt={`${activeEchoMedia.view_name} identify structure`}
                       fallbackTitle="Selected subview image unavailable"
                     />
                   ) : currentView.structure_video ? (
@@ -192,13 +204,6 @@ export default function Teaching({ setMode }) {
                       loadingTitle="Preparing the selected view screenshot..."
                     />
                   )}
-                  {activeMediaMask === "sector-lines" ? (
-                    <div className="tte-ref-sector-line-mask" aria-hidden="true">
-                      <span className="tte-ref-sector-line-mask-red" />
-                      <span className="tte-ref-sector-line-mask-green" />
-                      <span className="tte-ref-sector-line-mask-dot" />
-                    </div>
-                  ) : null}
                 </div>
               </div>
             </div>
