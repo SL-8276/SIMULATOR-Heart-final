@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { views } from "../../../data/tteData.js";
-import { excludedTrainingViewIds, trainingViewOverrides } from "../data/trainingHotspots.js";
-import { trainingSubviewsByViewId } from "../data/trainingSubviewHotspots.js";
+import { allTteViews, mainTteViews } from "../data/tteViewCatalog.js";
+import {
+  excludedTrainingViewIds,
+  supplementalTrainingHotspotsByViewId,
+  trainingViewOverrides
+} from "../data/trainingHotspots.js";
 import {
   extractQuaternion,
   findMatchingView,
@@ -14,11 +17,17 @@ import { getProbeInput } from "../lib/probeInput.js";
 import { MediaImage, MediaVideo } from "./ReferenceMedia.jsx";
 import { TrainingHotspotVideo } from "./TrainingHotspotMedia.jsx";
 
-const trainingViews = views
+const trainingViews = mainTteViews
   .filter((view) => !excludedTrainingViewIds.includes(view.id))
   .map((view) => ({
     ...view,
-    ...(trainingViewOverrides[view.id] ?? {})
+    ...(trainingViewOverrides[view.id] ?? {}),
+    image: trainingViewOverrides[view.id]?.image ?? view.training_image ?? view.image,
+    video: trainingViewOverrides[view.id]?.video ?? view.training_video ?? view.video,
+    hotspots: mergeHotspots(
+      trainingViewOverrides[view.id]?.hotspots ?? view.hotspots ?? [],
+      supplementalTrainingHotspotsByViewId[view.id] ?? []
+    )
   }));
 
 export default function Training({ setMode }) {
@@ -30,7 +39,6 @@ export default function Training({ setMode }) {
   const [matchedViewId, setMatchedViewId] = useState(null);
   const [probeStatus, setProbeStatus] = useState("Waiting for probe input.");
   const [matchedCalibration, setMatchedCalibration] = useState(null);
-  const [selectedSubviewId, setSelectedSubviewId] = useState("");
 
   const filteredViews = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -48,28 +56,16 @@ export default function Training({ setMode }) {
 
   const currentView = useMemo(() => {
     return (
-      trainingViews.find((view) => view.id === currentId) ??
+      trainingViews.find((view) => String(view.id) === String(currentId)) ??
       filteredViews[0] ??
       trainingViews[0]
     );
   }, [currentId, filteredViews]);
 
-  const currentSubviews = useMemo(() => {
-    return trainingSubviewsByViewId[currentView?.id] ?? [];
-  }, [currentView?.id]);
-
-  const activeSubview = useMemo(() => {
-    return (
-      currentSubviews.find((subview) => subview.id === selectedSubviewId) ?? null
-    );
-  }, [currentSubviews, selectedSubviewId]);
-
-  const activeStructureView = activeSubview ?? currentView;
-
   const hotspotOptionPool = useMemo(() => getHotspotOptionPool(), []);
 
   const matchedProbeView = useMemo(() => {
-    return views.find((view) => view.id === matchedViewId) ?? null;
+    return allTteViews.find((view) => String(view.id) === String(matchedViewId)) ?? null;
   }, [matchedViewId]);
 
   const readingLabel = useMemo(() => {
@@ -121,7 +117,7 @@ export default function Training({ setMode }) {
       }
 
       const calibrations = loadCalibrations();
-      const match = findMatchingView(reading, calibrations, views);
+      const match = findMatchingView(reading, calibrations, allTteViews);
 
       if (match) {
         setMatchedViewId(match.view.id);
@@ -179,15 +175,11 @@ export default function Training({ setMode }) {
 
   useEffect(() => {
     if (!filteredViews.length) return;
-    if (!filteredViews.some((view) => view.id === currentId)) {
+    if (!filteredViews.some((view) => String(view.id) === String(currentId))) {
       setCurrentId(filteredViews[0].id);
       setSelectedViewName(filteredViews[0].view_name);
     }
   }, [currentId, filteredViews]);
-
-  useEffect(() => {
-    setSelectedSubviewId("");
-  }, [currentId]);
 
   function handleFilteredSelectChange(e) {
     const value = e.target.value;
@@ -200,7 +192,7 @@ export default function Training({ setMode }) {
   }
 
   if (!currentView) return null;
-  const currentHotspots = activeStructureView.hotspots ?? [];
+  const currentHotspots = currentView.hotspots ?? [];
 
   if (workflow === "menu") {
     return (
@@ -365,22 +357,6 @@ export default function Training({ setMode }) {
               <span className="tte-ref-green-pill">{currentView.mnemonic}</span>
             </div>
 
-            {currentSubviews.length ? (
-              <select
-                className="tte-ref-subview-select"
-                value={selectedSubviewId}
-                onChange={(e) => setSelectedSubviewId(e.target.value)}
-                aria-label="Select training subview"
-              >
-                <option value="">Main view</option>
-                {currentSubviews.map((subview) => (
-                  <option key={subview.id} value={subview.id}>
-                    {subview.view_name}
-                  </option>
-                ))}
-              </select>
-            ) : null}
-
             <span className="tte-ref-blue-pill">{currentView.category}</span>
           </div>
 
@@ -390,8 +366,8 @@ export default function Training({ setMode }) {
                 <div className="tte-ref-section-label">UNLABELLED REFERENCE STILL</div>
                 <div className="tte-ref-media-frame">
                   <MediaImage
-                    src={activeStructureView.image}
-                    alt={activeStructureView.view_name}
+                    src={currentView.image}
+                    alt={currentView.view_name}
                   />
                 </div>
               </div>
@@ -400,7 +376,7 @@ export default function Training({ setMode }) {
                 <div className="tte-ref-section-label">IDENTIFY STRUCTURE</div>
                 <div className="tte-ref-media-frame">
                   <TrainingHotspotVideo
-                    src={activeStructureView.video}
+                    src={currentView.video}
                     hotspots={currentHotspots}
                     optionPool={hotspotOptionPool}
                   />
@@ -412,7 +388,7 @@ export default function Training({ setMode }) {
               <div className="tte-ref-detail-block">
                 <div className="tte-ref-detail-label">VIEW:</div>
                 <div className="tte-ref-detail-value">
-                  {activeStructureView.description}
+                  {currentView.description}
                 </div>
               </div>
 
@@ -450,4 +426,18 @@ function isInactiveProbeStatus(status) {
   return /choose a detected serial port|no com port found|serial bridge unavailable|serial closed|serial init failed|serial port selection failed/i.test(
     status
   );
+}
+
+function mergeHotspots(baseHotspots, supplementalHotspots) {
+  const merged = [];
+  const labels = new Set();
+
+  [...baseHotspots, ...supplementalHotspots].forEach((spot) => {
+    const labelKey = String(spot?.label ?? "").trim().toLowerCase();
+    if (!labelKey || labels.has(labelKey)) return;
+    labels.add(labelKey);
+    merged.push(spot);
+  });
+
+  return merged;
 }

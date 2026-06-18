@@ -1,3 +1,32 @@
+export const teachingExtraViews = [
+  {
+    id: "teaching-psax-pa-bifurcation",
+    mnemonic: "PsaxPABif",
+    view_name: "PSAX PA Bifurcation",
+    category: "Parasternal",
+    position: "parasternal",
+    image: "/assets/images/PsaxOut.jpg",
+    video: "/assets/teaching-subviews/psax-pa-bifurcation.mp4",
+    labelled_image: "/assets/teaching-subviews/psax-pa-bifurcation-labelled.png",
+    probe_orientation: "index marker pointing towards the left shoulder (2 o'clock)",
+    intercostal_space: "in the 3rd or 4th intercostal space, at the left parasternal border",
+    description: "Parasternal short-axis pulmonary artery bifurcation view."
+  },
+  {
+    id: "teaching-subcostal-ivc-longaxis",
+    mnemonic: "SubIVCLAX",
+    view_name: "Subcostal IVC Longaxis",
+    category: "Subcostal",
+    position: "subcostal",
+    image: "/assets/images/SubIVCLongaxisProbe.jpg",
+    video: "/assets/teaching-subviews/subcostal-ivc-longaxis.mp4",
+    labelled_image: "/assets/teaching-subviews/subcostal-ivc-longaxis-labelled.png",
+    probe_orientation: "index marker pointing towards the head (12 o'clock)",
+    intercostal_space: "in the subxiphoid region of the abdomen",
+    description: "Subcostal long-axis view of the inferior vena cava entering the right atrium."
+  }
+];
+
 export const teachingSubviewsByViewId = {
   1: [
     {
@@ -16,13 +45,6 @@ export const teachingSubviewsByViewId = {
     }
   ],
   4: [
-    {
-      id: "psax-pa-bifurcation",
-      view_name: "PSAX aortic valve level - PA Bifurcation",
-      image: "/assets/teaching-subviews/psax-pa-bifurcation.png",
-      labelled_image: "/assets/teaching-subviews/psax-pa-bifurcation-labelled.png",
-      video: "/assets/teaching-subviews/psax-pa-bifurcation.mp4"
-    },
     {
       id: "psax-av-leaflets",
       view_name: "PSAX aortic valve level - AV leaflets",
@@ -50,32 +72,11 @@ export const teachingSubviewsByViewId = {
   ],
   18: [
     {
-      id: "subcostal-ivc-longaxis",
-      view_name: "Subcostal IVC Longaxis",
-      image: "/assets/teaching-subviews/subcostal-ivc-longaxis.png",
-      labelled_image: "/assets/teaching-subviews/subcostal-ivc-longaxis-labelled.png",
-      video: "/assets/teaching-subviews/subcostal-ivc-longaxis.mp4"
-    },
-    {
       id: "subcostal-ivc-aorta",
       view_name: "Subcostal IVC - Aorta",
       image: "/assets/teaching-subviews/subcostal-ivc-aorta.png",
       labelled_image: "/assets/teaching-subviews/subcostal-ivc-aorta-labelled.png",
       video: "/assets/teaching-subviews/subcostal-ivc-aorta.mp4"
-    },
-    {
-      id: "subcostal-aorta-longaxis-color",
-      view_name: "Subcostal Aorta Long Axis Color",
-      image: "/assets/teaching-subviews/subcostal-aorta-longaxis-color.png",
-      labelled_image: "/assets/teaching-subviews/subcostal-aorta-longaxis-color-labelled.png",
-      video: "/assets/teaching-subviews/subcostal-aorta-longaxis-color.mp4"
-    },
-    {
-      id: "subcostal-great-vessels-sax",
-      view_name: "Subcostal Great Vessels SAX",
-      image: "/assets/teaching-subviews/subcostal-great-vessels-sax.png",
-      labelled_image: "/assets/teaching-subviews/subcostal-great-vessels-sax-labelled.png",
-      video: "/assets/teaching-subviews/subcostal-great-vessels-sax.mp4"
     }
   ],
   19: [
@@ -85,13 +86,6 @@ export const teachingSubviewsByViewId = {
       image: "/assets/teaching-subviews/suprasternal-aortic-lax.png",
       labelled_image: "/assets/teaching-subviews/suprasternal-aortic-lax-labelled.png",
       video: "/assets/teaching-subviews/suprasternal-aortic-lax.mp4"
-    },
-    {
-      id: "suprasternal-sax",
-      view_name: "Suprasternal SAX",
-      image: "/assets/teaching-subviews/suprasternal-sax.png",
-      labelled_image: "/assets/teaching-subviews/suprasternal-sax-labelled.png",
-      video: "/assets/teaching-subviews/suprasternal-sax.mp4"
     }
   ]
 };
