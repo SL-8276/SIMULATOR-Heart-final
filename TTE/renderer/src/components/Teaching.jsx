@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { views } from "../../../data/tteData.js";
+import { teachingSubviewsByViewId } from "../data/teachingSubviews.js";
 import { MediaImage, MediaVideo, MediaVideoSnapshot } from "./ReferenceMedia.jsx";
 
 export default function Teaching({ setMode }) {
@@ -7,6 +8,7 @@ export default function Teaching({ setMode }) {
   const [selectedViewName, setSelectedViewName] = useState("");
   const [currentId, setCurrentId] = useState(views[0]?.id ?? 1);
   const [mediaMode, setMediaMode] = useState("video");
+  const [selectedSubviewId, setSelectedSubviewId] = useState("");
   const isStructureMode = mediaMode === "features";
 
   const filteredViews = useMemo(() => {
@@ -27,8 +29,23 @@ export default function Teaching({ setMode }) {
     return views.find((view) => view.id === currentId) ?? views[0];
   }, [currentId]);
 
+  const currentSubviews = useMemo(() => {
+    return teachingSubviewsByViewId[currentView?.id] ?? [];
+  }, [currentView?.id]);
+
+  const activeSubview = useMemo(() => {
+    return (
+      currentSubviews.find((subview) => subview.id === selectedSubviewId) ?? null
+    );
+  }, [currentSubviews, selectedSubviewId]);
+
+  const activeEchoMedia = activeSubview ?? currentView;
+
   const activeMediaMask =
-    mediaMode === "video" ? currentView?.video_mask : currentView?.structure_video_mask;
+    mediaMode === "video"
+      ? activeSubview?.video_mask ?? (!activeSubview ? currentView?.video_mask : "")
+      : activeSubview?.structure_video_mask ??
+        (!activeSubview ? currentView?.structure_video_mask : "");
 
   useEffect(() => {
     if (!selectedViewName) return;
@@ -40,6 +57,7 @@ export default function Teaching({ setMode }) {
 
   useEffect(() => {
     setMediaMode("video");
+    setSelectedSubviewId("");
   }, [currentId]);
 
   function handleFilteredSelectChange(e) {
@@ -98,6 +116,22 @@ export default function Teaching({ setMode }) {
               <span className="tte-ref-green-pill">{currentView.mnemonic}</span>
             </div>
 
+            {currentSubviews.length ? (
+              <select
+                className="tte-ref-subview-select"
+                value={selectedSubviewId}
+                onChange={(e) => setSelectedSubviewId(e.target.value)}
+                aria-label="Select teaching subview"
+              >
+                <option value="">Main view</option>
+                {currentSubviews.map((subview) => (
+                  <option key={subview.id} value={subview.id}>
+                    {subview.view_name}
+                  </option>
+                ))}
+              </select>
+            ) : null}
+
             <span className="tte-ref-blue-pill">{currentView.category}</span>
           </div>
 
@@ -136,7 +170,13 @@ export default function Teaching({ setMode }) {
                   }`}
                 >
                   {mediaMode === "video" ? (
-                    <MediaVideo src={currentView.video} />
+                    <MediaVideo src={activeEchoMedia.video} />
+                  ) : activeSubview?.labelled_image ? (
+                    <MediaImage
+                      src={activeSubview.labelled_image}
+                      alt={`${activeSubview.view_name} identify structure`}
+                      fallbackTitle="Selected subview image unavailable"
+                    />
                   ) : currentView.structure_video ? (
                     <>
                       <MediaVideo
@@ -146,8 +186,8 @@ export default function Teaching({ setMode }) {
                     </>
                   ) : (
                     <MediaVideoSnapshot
-                      src={currentView.video}
-                      alt={`${currentView.view_name} screenshot`}
+                      src={activeEchoMedia.video}
+                      alt={`${activeEchoMedia.view_name} screenshot`}
                       fallbackTitle="Unable to load the selected view screenshot"
                       loadingTitle="Preparing the selected view screenshot..."
                     />
