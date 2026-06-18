@@ -418,6 +418,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
   padding: 0 26px;
   border-bottom: 1px solid #edf3f7;
 }
@@ -454,6 +455,24 @@ body {
   font-size: 12px;
   font-weight: 700;
   flex-shrink: 0;
+}
+
+.tte-ref-subview-select {
+  flex: 0 1 340px;
+  min-width: 220px;
+  height: 42px;
+  border: 1px solid #d5e4ef;
+  border-radius: 999px;
+  background: white;
+  color: #29485f;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 0 36px 0 14px;
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: auto;
+  -moz-appearance: auto;
+  appearance: auto;
 }
 
 .tte-ref-main-body {

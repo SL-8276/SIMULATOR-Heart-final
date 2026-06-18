@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { views } from "../../../data/tteData.js";
 import { excludedTrainingViewIds, trainingViewOverrides } from "../data/trainingHotspots.js";
+import { trainingSubviewsByViewId } from "../data/trainingSubviewHotspots.js";
 import {
   extractQuaternion,
   findMatchingView,
@@ -29,6 +30,7 @@ export default function Training({ setMode }) {
   const [matchedViewId, setMatchedViewId] = useState(null);
   const [probeStatus, setProbeStatus] = useState("Waiting for probe input.");
   const [matchedCalibration, setMatchedCalibration] = useState(null);
+  const [selectedSubviewId, setSelectedSubviewId] = useState("");
 
   const filteredViews = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -51,6 +53,18 @@ export default function Training({ setMode }) {
       trainingViews[0]
     );
   }, [currentId, filteredViews]);
+
+  const currentSubviews = useMemo(() => {
+    return trainingSubviewsByViewId[currentView?.id] ?? [];
+  }, [currentView?.id]);
+
+  const activeSubview = useMemo(() => {
+    return (
+      currentSubviews.find((subview) => subview.id === selectedSubviewId) ?? null
+    );
+  }, [currentSubviews, selectedSubviewId]);
+
+  const activeStructureView = activeSubview ?? currentView;
 
   const hotspotOptionPool = useMemo(() => getHotspotOptionPool(), []);
 
@@ -171,6 +185,10 @@ export default function Training({ setMode }) {
     }
   }, [currentId, filteredViews]);
 
+  useEffect(() => {
+    setSelectedSubviewId("");
+  }, [currentId]);
+
   function handleFilteredSelectChange(e) {
     const value = e.target.value;
     setSelectedViewName(value);
@@ -182,7 +200,7 @@ export default function Training({ setMode }) {
   }
 
   if (!currentView) return null;
-  const currentHotspots = currentView.hotspots ?? [];
+  const currentHotspots = activeStructureView.hotspots ?? [];
 
   if (workflow === "menu") {
     return (
@@ -347,6 +365,22 @@ export default function Training({ setMode }) {
               <span className="tte-ref-green-pill">{currentView.mnemonic}</span>
             </div>
 
+            {currentSubviews.length ? (
+              <select
+                className="tte-ref-subview-select"
+                value={selectedSubviewId}
+                onChange={(e) => setSelectedSubviewId(e.target.value)}
+                aria-label="Select training subview"
+              >
+                <option value="">Main view</option>
+                {currentSubviews.map((subview) => (
+                  <option key={subview.id} value={subview.id}>
+                    {subview.view_name}
+                  </option>
+                ))}
+              </select>
+            ) : null}
+
             <span className="tte-ref-blue-pill">{currentView.category}</span>
           </div>
 
@@ -355,7 +389,10 @@ export default function Training({ setMode }) {
               <div className="tte-ref-media-col">
                 <div className="tte-ref-section-label">UNLABELLED REFERENCE STILL</div>
                 <div className="tte-ref-media-frame">
-                  <MediaImage src={currentView.image} alt={currentView.view_name} />
+                  <MediaImage
+                    src={activeStructureView.image}
+                    alt={activeStructureView.view_name}
+                  />
                 </div>
               </div>
 
@@ -363,7 +400,7 @@ export default function Training({ setMode }) {
                 <div className="tte-ref-section-label">IDENTIFY STRUCTURE</div>
                 <div className="tte-ref-media-frame">
                   <TrainingHotspotVideo
-                    src={currentView.video}
+                    src={activeStructureView.video}
                     hotspots={currentHotspots}
                     optionPool={hotspotOptionPool}
                   />
@@ -374,7 +411,9 @@ export default function Training({ setMode }) {
             <div className="tte-ref-details-grid">
               <div className="tte-ref-detail-block">
                 <div className="tte-ref-detail-label">VIEW:</div>
-                <div className="tte-ref-detail-value">{currentView.description}</div>
+                <div className="tte-ref-detail-value">
+                  {activeStructureView.description}
+                </div>
               </div>
 
               <div className="tte-ref-detail-block">
