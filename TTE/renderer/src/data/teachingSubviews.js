@@ -1,5 +1,5 @@
 export const teachingExtraViews = [
-  {
+   {
     id: "teaching-psax-pa-bifurcation",
     mnemonic: "Pulmonary Artery Bifurcation",
     view_name: "Parasternal Short Axis - Pulmonary Artery Bifurcation",
@@ -7,11 +7,8 @@ export const teachingExtraViews = [
     position: "parasternal",
     image: "/assets/teaching-subviews/psax-pa-bifurcation.png",
     video: "/assets/teaching-subviews/psax-pa-bifurcation.mp4",
-    labelled_video: "/assets/teaching-subviews/psax-pa-bifurcation.mp4",
-    labelled_image: "/assets/teaching-subviews/psax-pa-bifurcation-labelled.png",
-    probe_orientation: "index marker pointing towards the left shoulder (2 o'clock)",
-    intercostal_space: "in the 3rd or 4th intercostal space, at the left parasternal border",
-    description: "Parasternal short-axis pulmonary artery bifurcation view."
+    structure_video: "/assets/teaching-subviews/psax-pa-bifurcation.mp4",
+    description: "Parasternal short axis view showing the pulmonary artery bifurcation."
   },
   {
     id: "teaching-subcostal-ivc-aorta",
@@ -27,7 +24,7 @@ export const teachingExtraViews = [
     intercostal_space: "in the subxiphoid region of the abdomen",
     description: "Subcostal view of the inferior vena cava and aorta."
   },
-  {
+   {
     id: "teaching-suprasternal-aortic-lax",
     mnemonic: "Suprasternal Aortic Arch",
     view_name: "Suprasternal Long Axis Aortic Arch",
@@ -35,11 +32,8 @@ export const teachingExtraViews = [
     position: "suprasternal",
     image: "/assets/teaching-subviews/suprasternal-aortic-lax.png",
     video: "/assets/teaching-subviews/suprasternal-aortic-lax.mp4",
-    labelled_video: "/assets/teaching-subviews/suprasternal-aortic-lax.mp4",
-    labelled_image: "/assets/teaching-subviews/suprasternal-aortic-lax-labelled.png",
-    probe_orientation: "index marker pointing towards the left supraclavicular notch (1 o'clock)",
-    intercostal_space: "in the suprasternal notch",
-    description: "Suprasternal long-axis view demonstrating the aortic arch and great vessel relationships."
+    structure_video: "/assets/teaching-subviews/suprasternal-aortic-lax.mp4",
+    description: "Suprasternal long axis view of the aortic arch."
   }
 ];
 
@@ -94,14 +88,18 @@ export const teachingSubviewsByViewId = {
 
   19: [],
   "teaching-subcostal-ivc-aorta": [
-    {
-      id: "teaching-subcostal-aorta",
-      view_name: "Aorta",
-      image: "/assets/teaching-subviews/subcostal-ivc-aorta.png",
-      labelled_image: "/assets/teaching-subviews/subcostal-ivc-aorta-labelled.png",
-      video: "/assets/teaching-subviews/subcostal-ivc-aorta.mp4",
-      labelled_video: "/assets/teaching-subviews/subcostal-ivc-aorta.mp4",
-      description: "Subcostal inferior vena cava view highlighting the aorta."
-    }
+    
+  {
+    id: "teaching-subcostal-ivc-aorta",
+    mnemonic: "Subcostal Inferior Vena Cava",
+    view_name: "Subcostal Inferior Vena Cava",
+    category: "Subcostal",
+    position: "subcostal",
+    image: "/assets/images/SubIVCLongaxisProbe.jpg",
+    video: "/assets/teaching-subviews/subcostal-ivc-longaxis.mp4",
+    structure_video: "/assets/teaching-subviews/subcostal-ivc-longaxis.mp4",
+    description: "Subcostal inferior vena cava view using the correct probe position image."
+  },
   ]
 };
+
