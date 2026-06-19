@@ -46,6 +46,7 @@ export default function Teaching({ setMode }) {
 
   const activeEchoMedia = activeSubview ?? currentView;
   const hasActiveVideo = Boolean(activeEchoMedia?.video);
+  const structureVideo = activeEchoMedia?.labelled_video ?? currentView?.structure_video;
 
   useEffect(() => {
     if (!selectedViewName) return;
@@ -183,19 +184,17 @@ export default function Teaching({ setMode }) {
                 <div className="tte-ref-media-frame">
                   {mediaMode === "video" ? (
                     <MediaVideo src={activeEchoMedia.video} />
+                  ) : structureVideo ? (
+                    <MediaVideo
+                      src={structureVideo}
+                      fallbackTitle="Marked structure video unavailable"
+                    />
                   ) : activeEchoMedia?.labelled_image ? (
                     <MediaImage
                       src={activeEchoMedia.labelled_image}
                       alt={`${activeEchoMedia.view_name} identify structure`}
                       fallbackTitle="Selected subview image unavailable"
                     />
-                  ) : currentView.structure_video ? (
-                    <>
-                      <MediaVideo
-                        src={currentView.structure_video}
-                        fallbackTitle="Marked structure video unavailable"
-                      />
-                    </>
                   ) : (
                     <MediaVideoSnapshot
                       src={activeEchoMedia.video}

@@ -9,9 +9,9 @@ const extraTrainingMediaById = {
     training_image: "/assets/training/images/psax-pa-bifurcation.png",
     training_video: "/assets/training/videos/psax-pa-bifurcation.mp4"
   },
-  "teaching-subcostal-ivc-longaxis": {
-    training_image: "/assets/training/images/subcostal-ivc-longaxis.png",
-    training_video: "/assets/training/videos/subcostal-ivc-longaxis.mp4"
+  "teaching-subcostal-ivc-aorta": {
+    training_image: "/assets/training/images/subcostal-ivc-aorta.png",
+    training_video: "/assets/training/videos/subcostal-ivc-aorta.mp4"
   },
   "teaching-suprasternal-aortic-lax": {
     training_image: "/assets/training/images/suprasternal-aortic-lax.png",
