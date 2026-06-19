@@ -63,13 +63,21 @@ export const teachingSubviewsByViewId = {
     }
   ],
   16: [
-    {
-      id: "subcostal-sax-mitral-level",
-      view_name: "Subcostal SAX Mitral level",
-      image: "/assets/teaching-subviews/subcostal-sax-mitral-level.png",
-      labelled_image: "/assets/teaching-subviews/subcostal-sax-mitral-level-labelled.png"
-    }
-  ],
+    
+  {
+    id: "teaching-subcostal-mitral",
+    mnemonic: "SubMV",
+    view_name: "Subcostal Mitral",
+    category: "Subcostal",
+    position: "subcostal",
+    image: "/assets/images/SubcostalMitralProbe.jpg",
+    video: "/assets/teaching-subviews/subcostal-mitral.mp4",
+    probe_orientation: "index marker pointing towards the head (12 o'clock)",
+    intercostal_space: "in the subxiphoid region of the abdomen",
+    description: "Subcostal view focused on the mitral valve."
+  }
+],
+
   18: [
     {
       id: "subcostal-ivc-aorta",
