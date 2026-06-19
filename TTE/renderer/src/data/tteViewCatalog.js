@@ -19,10 +19,16 @@ const extraTrainingMediaById = {
   }
 };
 
+const duplicateBaseViewIds = [18, 19];
+
 const teachingMainViews = teachingExtraViews.map((view) => ({
   ...view,
   ...(extraTrainingMediaById[view.id] ?? {})
 }));
+
+const baseViewsWithoutDuplicateTeachingViews = views.filter(
+  (view) => !duplicateBaseViewIds.includes(view.id)
+);
 
 function makeSubviewView(parentView, subview) {
   return {
@@ -41,11 +47,15 @@ function makeSubviewView(parentView, subview) {
   };
 }
 
-const teachingSubviewViews = views.flatMap((view) => {
+const allViewsForSubviews = views.concat(teachingExtraViews);
+
+const teachingSubviewViews = allViewsForSubviews.flatMap((view) => {
   const subviews = teachingSubviewsByViewId[view.id] ?? [];
   return subviews.map((subview) => makeSubviewView(view, subview));
 });
 
 export const tteViews = views;
-export const mainTteViews = views.concat(teachingMainViews);
+export const mainTteViews = baseViewsWithoutDuplicateTeachingViews.concat(
+  teachingMainViews
+);
 export const allTteViews = views.concat(teachingMainViews, teachingSubviewViews);

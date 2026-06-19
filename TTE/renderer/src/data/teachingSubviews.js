@@ -1,7 +1,7 @@
 export const teachingExtraViews = [
   {
     id: "teaching-psax-pa-bifurcation",
-    mnemonic: "PsaxPABif",
+    mnemonic: "Pulmonary Artery Bifurcation",
     view_name: "Parasternal Short Axis - Pulmonary Artery Bifurcation",
     category: "Parasternal",
     position: "parasternal",
@@ -15,7 +15,7 @@ export const teachingExtraViews = [
   },
   {
     id: "teaching-subcostal-ivc-aorta",
-    mnemonic: "SubIVC",
+    mnemonic: "Subcostal Inferior Vena Cava",
     view_name: "Subcostal Inferior Vena Cava",
     category: "Subcostal",
     position: "subcostal",
@@ -29,7 +29,7 @@ export const teachingExtraViews = [
   },
   {
     id: "teaching-suprasternal-aortic-lax",
-    mnemonic: "SupLAXTeach",
+    mnemonic: "Suprasternal Aortic Arch",
     view_name: "Suprasternal Long Axis Aortic Arch",
     category: "Suprasternal",
     position: "suprasternal",
@@ -92,5 +92,16 @@ export const teachingSubviewsByViewId = {
     }
   ],
 
-  19: []
+  19: [],
+  "teaching-subcostal-ivc-aorta": [
+    {
+      id: "teaching-subcostal-aorta",
+      view_name: "Aorta",
+      image: "/assets/teaching-subviews/subcostal-ivc-aorta.png",
+      labelled_image: "/assets/teaching-subviews/subcostal-ivc-aorta-labelled.png",
+      video: "/assets/teaching-subviews/subcostal-ivc-aorta.mp4",
+      labelled_video: "/assets/teaching-subviews/subcostal-ivc-aorta.mp4",
+      description: "Subcostal inferior vena cava view highlighting the aorta."
+    }
+  ]
 };
