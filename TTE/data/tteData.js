@@ -235,7 +235,7 @@ export const views = [
     view_name: "Subcostal Inferior Vena Cava",
     category: "Subcostal",
     position: "subcostal",
-    image: "/assets/images/SubIVC.jpg",
+    image: "/assets/images/SubIVCLongaxisProbe.jpg",
     video: "/assets/videos/SubIVC.mp4",
     structure_video: "/assets/videos/marked-structures/Subcostal_IVC.mp4",
     probe_orientation: "index marker pointing towards the head (12 o'clock)",
