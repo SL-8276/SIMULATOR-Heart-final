@@ -9,16 +9,26 @@ const extraTrainingMediaById = {
     training_image: "/assets/training/images/psax-pa-bifurcation.png",
     training_video: "/assets/training/videos/psax-pa-bifurcation.mp4"
   },
-  "teaching-subcostal-ivc-longaxis": {
-    training_image: "/assets/training/images/subcostal-ivc-longaxis.png",
-    training_video: "/assets/training/videos/subcostal-ivc-longaxis.mp4"
+  "teaching-subcostal-ivc-aorta": {
+    training_image: "/assets/training/images/subcostal-ivc-aorta.png",
+    training_video: "/assets/training/videos/subcostal-ivc-aorta.mp4"
+  },
+  "teaching-suprasternal-aortic-lax": {
+    training_image: "/assets/training/images/suprasternal-aortic-lax.png",
+    training_video: "/assets/training/videos/suprasternal-aortic-lax.mp4"
   }
 };
+
+const duplicateBaseViewIds = [18, 19];
 
 const teachingMainViews = teachingExtraViews.map((view) => ({
   ...view,
   ...(extraTrainingMediaById[view.id] ?? {})
 }));
+
+const baseViewsWithoutDuplicateTeachingViews = views.filter(
+  (view) => !duplicateBaseViewIds.includes(view.id)
+);
 
 function makeSubviewView(parentView, subview) {
   return {
@@ -37,11 +47,15 @@ function makeSubviewView(parentView, subview) {
   };
 }
 
-const teachingSubviewViews = views.flatMap((view) => {
+const allViewsForSubviews = views.concat(teachingExtraViews);
+
+const teachingSubviewViews = allViewsForSubviews.flatMap((view) => {
   const subviews = teachingSubviewsByViewId[view.id] ?? [];
   return subviews.map((subview) => makeSubviewView(view, subview));
 });
 
 export const tteViews = views;
-export const mainTteViews = views.concat(teachingMainViews);
+export const mainTteViews = baseViewsWithoutDuplicateTeachingViews.concat(
+  teachingMainViews
+);
 export const allTteViews = views.concat(teachingMainViews, teachingSubviewViews);

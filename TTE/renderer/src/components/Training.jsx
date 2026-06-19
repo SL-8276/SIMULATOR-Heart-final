@@ -33,8 +33,7 @@ const trainingViews = mainTteViews
 export default function Training({ setMode }) {
   const [workflow, setWorkflow] = useState("menu");
   const [search, setSearch] = useState("");
-  const [selectedViewName, setSelectedViewName] = useState("");
-  const [currentId, setCurrentId] = useState(trainingViews[0]?.id ?? 1);
+  const [currentId, setCurrentId] = useState(String(trainingViews[0]?.id ?? 1));
   const [probeReading, setProbeReading] = useState(null);
   const [matchedViewId, setMatchedViewId] = useState(null);
   const [probeStatus, setProbeStatus] = useState("Waiting for probe input.");
@@ -166,29 +165,15 @@ export default function Training({ setMode }) {
   }, []);
 
   useEffect(() => {
-    if (!selectedViewName) return;
-    const selected = trainingViews.find((view) => view.view_name === selectedViewName);
-    if (selected) {
-      setCurrentId(selected.id);
-    }
-  }, [selectedViewName]);
-
-  useEffect(() => {
     if (!filteredViews.length) return;
     if (!filteredViews.some((view) => String(view.id) === String(currentId))) {
-      setCurrentId(filteredViews[0].id);
-      setSelectedViewName(filteredViews[0].view_name);
+      setCurrentId(String(filteredViews[0].id));
     }
   }, [currentId, filteredViews]);
 
   function handleFilteredSelectChange(e) {
-    const value = e.target.value;
-    setSelectedViewName(value);
-
-    const selected = trainingViews.find((view) => view.view_name === value);
-    if (selected) {
-      setCurrentId(selected.id);
-    }
+    const value = String(e.target.value);
+    setCurrentId(value);
   }
 
   if (!currentView) return null;
@@ -339,11 +324,11 @@ export default function Training({ setMode }) {
 
           <select
             className="tte-ref-view-select-top"
-            value={selectedViewName || currentView.view_name}
+            value={currentId}
             onChange={handleFilteredSelectChange}
           >
             {filteredViews.map((view) => (
-              <option key={view.id} value={view.view_name}>
+              <option key={view.id} value={String(view.id)}>
                 {view.view_name}
               </option>
             ))}

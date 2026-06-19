@@ -32,11 +32,6 @@ export const supplementalTrainingHotspotsByViewId = {
     { id: "teach-psax-pa-bifurcation-4", label: "MPA", x: 54.91, y: 60.38, options: ["RPA", "LPA", "MPA", "PV"] },
     { id: "teach-psax-pa-bifurcation-5", label: "PV", x: 57.8, y: 50.0, options: ["RPA", "LPA", "MPA", "PV"] }
   ],
-  "teaching-subcostal-ivc-longaxis": [
-    { id: "teach-subcostal-ivc-longaxis-1", label: "Liver", x: 48.72, y: 37.76, options: ["Liver", "IVC", "Aorta", "RA"] },
-    { id: "teach-subcostal-ivc-longaxis-2", label: "IVC", x: 49.62, y: 64.35, options: ["IVC", "Aorta", "Liver", "RA"] },
-    { id: "teach-subcostal-ivc-longaxis-3", label: "RA", x: 59.87, y: 66.39, options: ["RA", "RV", "LA", "IAS"] }
-  ]
 };
 
 export const trainingViewOverrides = {
