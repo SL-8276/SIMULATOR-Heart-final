@@ -4,7 +4,7 @@ import {
   teachingExtraViews,
   teachingSubviewsByViewId
 } from "../data/teachingSubviews.js";
-import { MediaImage, MediaVideo, MediaVideoSnapshot } from "./ReferenceMedia.jsx";
+import { MediaAsset, MediaImage, MediaVideo, MediaVideoSnapshot } from "./ReferenceMedia.jsx";
 
 const teachingViews = views.concat(teachingExtraViews);
 
@@ -184,7 +184,7 @@ export default function Teaching({ setMode }) {
                   {mediaMode === "video" ? (
                     <MediaVideo src={activeEchoMedia.video} />
                   ) : activeEchoMedia?.labelled_image ? (
-                    <MediaImage
+                    <MediaAsset
                       src={activeEchoMedia.labelled_image}
                       alt={`${activeEchoMedia.view_name} identify structure`}
                       fallbackTitle="Selected subview image unavailable"

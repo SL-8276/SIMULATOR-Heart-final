@@ -80,6 +80,17 @@ export function MediaVideo({ src, fallbackTitle = "Echocardiography Video" }) {
   );
 }
 
+export function MediaAsset({ src, alt, fallbackTitle }) {
+  const path = String(src || "").split(/[?#]/, 1)[0];
+  const isVideo = /\.(mp4|webm|mov)$/i.test(path);
+
+  return isVideo ? (
+    <MediaVideo src={src} fallbackTitle={fallbackTitle} />
+  ) : (
+    <MediaImage src={src} alt={alt} fallbackTitle={fallbackTitle} />
+  );
+}
+
 export function MediaVideoSnapshot({
   src,
   alt,

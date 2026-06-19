@@ -33,14 +33,14 @@ export const teachingSubviewsByViewId = {
       id: "plax-av-zoomed",
       view_name: "PLAX AV Zoomed",
       image: "/assets/teaching-subviews/plax-av-zoomed.png",
-      labelled_image: "/assets/teaching-subviews/plax-av-zoomed-labelled.png",
+      labelled_image: "/assets/teaching-subviews/plax-av-zoomed.mp4",
       video: "/assets/teaching-subviews/plax-av-zoomed.mp4"
     },
     {
       id: "plax-mv-zoomed",
       view_name: "PLAX MV Zoomed",
       image: "/assets/teaching-subviews/plax-mv-zoomed.png",
-      labelled_image: "/assets/teaching-subviews/plax-mv-zoomed-labelled.png",
+      labelled_image: "/assets/teaching-subviews/plax-mv-zoomed.mp4",
       video: "/assets/teaching-subviews/plax-mv-zoomed.mp4"
     }
   ],
