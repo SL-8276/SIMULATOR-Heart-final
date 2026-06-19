@@ -200,7 +200,7 @@ export const views = [
   {
     id: 14,
     mnemonic: "SubOut",
-    view_name: "Subcostal RV Outflow",
+    view_name: "Subcostal Short Axis Right Ventricular Outflow",
     category: "Subcostal",
     position: "subcostal",
     image: "/assets/images/SubOut.jpg",

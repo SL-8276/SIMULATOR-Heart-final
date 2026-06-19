@@ -12,6 +12,10 @@ const extraTrainingMediaById = {
   "teaching-subcostal-ivc-longaxis": {
     training_image: "/assets/training/images/subcostal-ivc-longaxis.png",
     training_video: "/assets/training/videos/subcostal-ivc-longaxis.mp4"
+  },
+  "teaching-suprasternal-aortic-lax": {
+    training_image: "/assets/training/images/suprasternal-aortic-lax.png",
+    training_video: "/assets/training/videos/suprasternal-aortic-lax.mp4"
   }
 };
 
