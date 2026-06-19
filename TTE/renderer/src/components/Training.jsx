@@ -17,6 +17,8 @@ import { getProbeInput } from "../lib/probeInput.js";
 import { MediaImage, MediaVideo } from "./ReferenceMedia.jsx";
 import { TrainingHotspotVideo } from "./TrainingHotspotMedia.jsx";
 
+const BLANK_ECHO_VIDEO = "/assets/videos/Blank.mp4";
+
 const trainingViews = mainTteViews
   .filter((view) => !excludedTrainingViewIds.includes(view.id))
   .map((view) => ({
@@ -67,6 +69,10 @@ export default function Training({ setMode }) {
   const matchedProbeView = useMemo(() => {
     return allTteViews.find((view) => String(view.id) === String(matchedViewId)) ?? null;
   }, [matchedViewId]);
+
+  const hasActiveUnmatchedProbe = Boolean(
+    probeReading && !matchedProbeView && !isInactiveProbeTag(probeReading.tag)
+  );
 
   const readingLabel = useMemo(() => {
     if (!probeReading) return "No probe data received yet";
@@ -128,7 +134,7 @@ export default function Training({ setMode }) {
 
       setMatchedViewId(null);
       setMatchedCalibration(null);
-      setProbeStatus("No calibrated view matched the current probe tag and quaternion.");
+      setProbeStatus("Probe contact detected, but no calibrated view matched the current probe tag and quaternion.");
     }
 
     const unsubscribeReading =
@@ -230,6 +236,14 @@ export default function Training({ setMode }) {
   }
 
   if (workflow === "probe") {
+    const probePositionImage = matchedProbeView?.image ?? null;
+    const echoVideo = matchedProbeView?.video ?? (hasActiveUnmatchedProbe ? BLANK_ECHO_VIDEO : null);
+    const probeViewTitle = matchedProbeView
+      ? matchedProbeView.view_name
+      : hasActiveUnmatchedProbe
+        ? "No Matching View"
+        : "Awaiting Matched View";
+
     return (
       <div className="tte-ref-page">
         <div className="tte-ref-topband">
@@ -246,10 +260,10 @@ export default function Training({ setMode }) {
             <div className="tte-ref-card-titlebar">
               <div className="tte-ref-title-left">
                 <span className="tte-ref-view-title">
-                  {matchedProbeView ? matchedProbeView.view_name : "Awaiting Matched View"}
+                  {probeViewTitle}
                 </span>
                 <span className="tte-ref-green-pill">
-                  {matchedProbeView?.mnemonic ?? "Probe"}
+                  {matchedProbeView?.mnemonic ?? (hasActiveUnmatchedProbe ? "Blank" : "Probe")}
                 </span>
               </div>
 
@@ -264,9 +278,13 @@ export default function Training({ setMode }) {
                   <div className="tte-ref-section-label">PROBE POSITION IMAGE</div>
                   <div className="tte-ref-media-frame">
                     <MediaImage
-                      src={matchedProbeView?.image}
-                      alt={matchedProbeView?.view_name ?? "Matched TTE view"}
-                      fallbackTitle="Waiting for a calibrated probe match"
+                      src={probePositionImage}
+                      alt={matchedProbeView?.view_name ?? probeViewTitle}
+                      fallbackTitle={
+                        hasActiveUnmatchedProbe
+                          ? "No matching probe position"
+                          : "Waiting for a calibrated probe match"
+                      }
                     />
                   </div>
                 </div>
@@ -275,7 +293,7 @@ export default function Training({ setMode }) {
                   <div className="tte-ref-section-label">ECHOCARDIOGRAPHY VIDEO</div>
                   <div className="tte-ref-media-frame">
                     <MediaVideo
-                      src={matchedProbeView?.video}
+                      src={echoVideo}
                       fallbackTitle="Matched echocardiography video will appear here"
                     />
                   </div>

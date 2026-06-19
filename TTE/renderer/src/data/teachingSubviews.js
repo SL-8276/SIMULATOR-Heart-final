@@ -5,7 +5,7 @@ export const teachingExtraViews = [
     view_name: "PSAX PA Bifurcation",
     category: "Parasternal",
     position: "parasternal",
-    image: "/assets/images/PsaxOut.jpg",
+    image: "/assets/images/PSAXPABifurcationProbe.png",
     video: "/assets/teaching-subviews/psax-pa-bifurcation.mp4",
     labelled_image: "/assets/teaching-subviews/psax-pa-bifurcation-labelled.png",
     probe_orientation: "index marker pointing towards the left shoulder (2 o'clock)",
@@ -18,12 +18,24 @@ export const teachingExtraViews = [
     view_name: "Subcostal IVC Longaxis",
     category: "Subcostal",
     position: "subcostal",
-    image: "/assets/images/SubIVCLongaxisProbe.jpg",
+    image: "/assets/images/SubIVCProbe.png",
     video: "/assets/teaching-subviews/subcostal-ivc-longaxis.mp4",
     labelled_image: "/assets/teaching-subviews/subcostal-ivc-longaxis-labelled.png",
     probe_orientation: "index marker pointing towards the head (12 o'clock)",
     intercostal_space: "in the subxiphoid region of the abdomen",
     description: "Subcostal long-axis view of the inferior vena cava entering the right atrium."
+  },
+  {
+    id: "teaching-subcostal-mitral",
+    mnemonic: "SubMV",
+    view_name: "Subcostal Mitral",
+    category: "Subcostal",
+    position: "subcostal",
+    image: "/assets/images/SubcostalMitralProbe.jpg",
+    video: "/assets/teaching-subviews/subcostal-mitral.mp4",
+    probe_orientation: "index marker pointing towards the head (12 o'clock)",
+    intercostal_space: "in the subxiphoid region of the abdomen",
+    description: "Subcostal view focused on the mitral valve."
   }
 ];
 

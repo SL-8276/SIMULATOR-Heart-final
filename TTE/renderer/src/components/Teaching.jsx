@@ -6,7 +6,19 @@ import {
 } from "../data/teachingSubviews.js";
 import { MediaAsset, MediaImage, MediaVideo, MediaVideoSnapshot } from "./ReferenceMedia.jsx";
 
-const teachingViews = views.concat(teachingExtraViews);
+const suprasternalView = views.find((view) => view.id === 19);
+const finalTeachingViews = [
+  teachingExtraViews.find((view) => view.id === "teaching-psax-pa-bifurcation"),
+  teachingExtraViews.find((view) => view.id === "teaching-subcostal-ivc-longaxis"),
+  suprasternalView
+].filter(Boolean);
+const finalTeachingViewIds = new Set(finalTeachingViews.map((view) => view.id));
+const teachingViews = views
+  .filter((view) => view.id !== 19)
+  .concat(
+    teachingExtraViews.filter((view) => !finalTeachingViewIds.has(view.id)),
+    finalTeachingViews
+  );
 
 export default function Teaching({ setMode }) {
   const [search, setSearch] = useState("");
