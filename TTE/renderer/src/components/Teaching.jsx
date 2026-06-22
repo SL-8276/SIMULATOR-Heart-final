@@ -1,18 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
-import { views } from "../../../data/tteData.js";
-import {
-  teachingExtraViews,
-  teachingSubviewsByViewId
-} from "../data/teachingSubviews.js";
+import { teachingSubviewsByViewId } from "../data/teachingSubviews.js";
+import { mainTteViews } from "../data/tteViewCatalog.js";
 import { MediaAsset, MediaImage, MediaVideo, MediaVideoSnapshot } from "./ReferenceMedia.jsx";
 
-const teachingViews = views
-  .filter((view) => ![18, 19].includes(view.id))
-  .concat(teachingExtraViews);
+const teachingViews = mainTteViews;
 
 export default function Teaching({ setMode }) {
   const [search, setSearch] = useState("");
-  const [currentId, setCurrentId] = useState(String(teachingViews[0]?.id ?? 1));
+  const [selectedViewName, setSelectedViewName] = useState("");
+  const [currentId, setCurrentId] = useState(teachingViews[0]?.id ?? 1);
   const [mediaMode, setMediaMode] = useState("video");
   const [selectedSubviewId, setSelectedSubviewId] = useState("");
   const isStructureMode = mediaMode === "features";
@@ -32,10 +28,7 @@ export default function Teaching({ setMode }) {
   }, [search]);
 
   const currentView = useMemo(() => {
-    return (
-      teachingViews.find((view) => String(view.id) === String(currentId)) ??
-      teachingViews[0]
-    );
+    return teachingViews.find((view) => view.id === currentId) ?? teachingViews[0];
   }, [currentId]);
 
   const currentSubviews = useMemo(() => {
@@ -50,7 +43,14 @@ export default function Teaching({ setMode }) {
 
   const activeEchoMedia = activeSubview ?? currentView;
   const hasActiveVideo = Boolean(activeEchoMedia?.video);
-  const structureVideo = activeEchoMedia?.labelled_video ?? currentView?.structure_video;
+
+  useEffect(() => {
+    if (!selectedViewName) return;
+    const selected = teachingViews.find((view) => view.view_name === selectedViewName);
+    if (selected) {
+      setCurrentId(selected.id);
+    }
+  }, [selectedViewName]);
 
   useEffect(() => {
     setMediaMode("video");
@@ -64,8 +64,13 @@ export default function Teaching({ setMode }) {
   }, [activeSubview, hasActiveVideo]);
 
   function handleFilteredSelectChange(e) {
-    const value = String(e.target.value);
-    setCurrentId(value);
+    const value = e.target.value;
+    setSelectedViewName(value);
+
+    const selected = teachingViews.find((view) => view.view_name === value);
+    if (selected) {
+      setCurrentId(selected.id);
+    }
   }
 
   if (!currentView) return null;
@@ -96,11 +101,11 @@ export default function Teaching({ setMode }) {
 
           <select
             className="tte-ref-view-select-top"
-            value={currentId}
+            value={selectedViewName || currentView.view_name}
             onChange={handleFilteredSelectChange}
           >
             {filteredViews.map((view) => (
-              <option key={view.id} value={String(view.id)}>
+              <option key={view.id} value={view.view_name}>
                 {view.view_name}
               </option>
             ))}
@@ -175,17 +180,19 @@ export default function Teaching({ setMode }) {
                 <div className="tte-ref-media-frame">
                   {mediaMode === "video" ? (
                     <MediaVideo src={activeEchoMedia.video} />
-                  ) : structureVideo ? (
-                    <MediaVideo
-                      src={structureVideo}
-                      fallbackTitle="Marked structure video unavailable"
-                    />
                   ) : activeEchoMedia?.labelled_image ? (
                     <MediaAsset
                       src={activeEchoMedia.labelled_image}
                       alt={`${activeEchoMedia.view_name} identify structure`}
                       fallbackTitle="Selected subview image unavailable"
                     />
+                  ) : currentView.structure_video ? (
+                    <>
+                      <MediaVideo
+                        src={currentView.structure_video}
+                        fallbackTitle="Marked structure video unavailable"
+                      />
+                    </>
                   ) : (
                     <MediaVideoSnapshot
                       src={activeEchoMedia.video}
