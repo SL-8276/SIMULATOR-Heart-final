@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { allTteViews } from "../data/tteViewCatalog.js";
+import { mainTteViews } from "../data/tteViewCatalog.js";
 import { MediaImage, MediaVideo } from "./ReferenceMedia.jsx";
 import {
   extractQuaternion,
@@ -11,7 +11,7 @@ import {
 import { getProbeInput } from "../lib/probeInput.js";
 
 export default function Calibration({ setMode }) {
-  const [selectedViewId, setSelectedViewId] = useState(allTteViews[0]?.id ?? 1);
+  const [selectedViewId, setSelectedViewId] = useState(mainTteViews[0]?.id ?? 1);
   const [probeReading, setProbeReading] = useState(null);
   const [status, setStatus] = useState("");
   const [serialStatus, setSerialStatus] = useState("Waiting for serial connection.");
@@ -20,7 +20,7 @@ export default function Calibration({ setMode }) {
   const [clickedCalibrationViews, setClickedCalibrationViews] = useState({});
 
   const currentView = useMemo(() => {
-    return allTteViews.find((view) => String(view.id) === String(selectedViewId)) ?? allTteViews[0];
+    return mainTteViews.find((view) => String(view.id) === String(selectedViewId)) ?? mainTteViews[0];
   }, [selectedViewId]);
 
   const currentCalibration = useMemo(() => {
@@ -176,7 +176,7 @@ export default function Calibration({ setMode }) {
             value={selectedViewId}
             onChange={handleViewChange}
           >
-            {allTteViews.map((view) => (
+            {mainTteViews.map((view) => (
               <option key={view.id} value={view.id}>
                 {view.view_name}
               </option>

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { allTteViews, mainTteViews } from "../data/tteViewCatalog.js";
+import { mainTteViews } from "../data/tteViewCatalog.js";
 import {
   excludedTrainingViewIds,
   supplementalTrainingHotspotsByViewId,
@@ -17,23 +17,32 @@ import { getProbeInput } from "../lib/probeInput.js";
 import { MediaImage, MediaVideo } from "./ReferenceMedia.jsx";
 import { TrainingHotspotVideo } from "./TrainingHotspotMedia.jsx";
 
+const BLANK_ECHO_VIDEO = "/assets/videos/Blank.mp4";
+
 const trainingViews = mainTteViews
   .filter((view) => !excludedTrainingViewIds.includes(view.id))
-  .map((view) => ({
-    ...view,
-    ...(trainingViewOverrides[view.id] ?? {}),
-    image: trainingViewOverrides[view.id]?.image ?? view.training_image ?? view.image,
-    video: trainingViewOverrides[view.id]?.video ?? view.training_video ?? view.video,
-    hotspots: mergeHotspots(
-      trainingViewOverrides[view.id]?.hotspots ?? view.hotspots ?? [],
-      supplementalTrainingHotspotsByViewId[view.id] ?? []
-    )
-  }));
+  .map((view) => {
+    const trainingOverride = trainingViewOverrides[view.id] ?? {};
+
+    return {
+      ...view,
+      ...trainingOverride,
+      probe_image: view.image,
+      probe_video: view.video,
+      reference_image: trainingOverride.image ?? view.training_image ?? view.image,
+      identify_video: trainingOverride.video ?? view.training_video ?? view.video,
+      hotspots: mergeHotspots(
+        trainingOverride.hotspots ?? view.hotspots ?? [],
+        supplementalTrainingHotspotsByViewId[view.id] ?? []
+      )
+    };
+  });
 
 export default function Training({ setMode }) {
   const [workflow, setWorkflow] = useState("menu");
   const [search, setSearch] = useState("");
-  const [currentId, setCurrentId] = useState(String(trainingViews[0]?.id ?? 1));
+  const [selectedViewName, setSelectedViewName] = useState("");
+  const [currentId, setCurrentId] = useState(trainingViews[0]?.id ?? 1);
   const [probeReading, setProbeReading] = useState(null);
   const [matchedViewId, setMatchedViewId] = useState(null);
   const [probeStatus, setProbeStatus] = useState("Waiting for probe input.");
@@ -64,8 +73,12 @@ export default function Training({ setMode }) {
   const hotspotOptionPool = useMemo(() => getHotspotOptionPool(), []);
 
   const matchedProbeView = useMemo(() => {
-    return allTteViews.find((view) => String(view.id) === String(matchedViewId)) ?? null;
+    return trainingViews.find((view) => String(view.id) === String(matchedViewId)) ?? null;
   }, [matchedViewId]);
+
+  const hasActiveUnmatchedProbe = Boolean(
+    probeReading && !matchedProbeView && !isInactiveProbeTag(probeReading.tag)
+  );
 
   const readingLabel = useMemo(() => {
     if (!probeReading) return "No probe data received yet";
@@ -116,7 +129,7 @@ export default function Training({ setMode }) {
       }
 
       const calibrations = loadCalibrations();
-      const match = findMatchingView(reading, calibrations, allTteViews);
+      const match = findMatchingView(reading, calibrations, trainingViews);
 
       if (match) {
         setMatchedViewId(match.view.id);
@@ -127,7 +140,7 @@ export default function Training({ setMode }) {
 
       setMatchedViewId(null);
       setMatchedCalibration(null);
-      setProbeStatus("No calibrated view matched the current probe tag and quaternion.");
+      setProbeStatus("Probe contact detected, but no view is calibrated for the current probe tag.");
     }
 
     const unsubscribeReading =
@@ -165,15 +178,29 @@ export default function Training({ setMode }) {
   }, []);
 
   useEffect(() => {
+    if (!selectedViewName) return;
+    const selected = trainingViews.find((view) => view.view_name === selectedViewName);
+    if (selected) {
+      setCurrentId(selected.id);
+    }
+  }, [selectedViewName]);
+
+  useEffect(() => {
     if (!filteredViews.length) return;
     if (!filteredViews.some((view) => String(view.id) === String(currentId))) {
-      setCurrentId(String(filteredViews[0].id));
+      setCurrentId(filteredViews[0].id);
+      setSelectedViewName(filteredViews[0].view_name);
     }
   }, [currentId, filteredViews]);
 
   function handleFilteredSelectChange(e) {
-    const value = String(e.target.value);
-    setCurrentId(value);
+    const value = e.target.value;
+    setSelectedViewName(value);
+
+    const selected = trainingViews.find((view) => view.view_name === value);
+    if (selected) {
+      setCurrentId(selected.id);
+    }
   }
 
   if (!currentView) return null;
@@ -215,6 +242,15 @@ export default function Training({ setMode }) {
   }
 
   if (workflow === "probe") {
+    const displayedProbeView = matchedProbeView;
+    const probePositionImage = displayedProbeView?.probe_image ?? null;
+    const echoVideo = displayedProbeView?.probe_video ?? (hasActiveUnmatchedProbe ? BLANK_ECHO_VIDEO : null);
+    const probeViewTitle = displayedProbeView
+      ? displayedProbeView.view_name
+      : hasActiveUnmatchedProbe
+        ? "No Matching View"
+        : "Awaiting Matched View";
+
     return (
       <div className="tte-ref-page">
         <div className="tte-ref-topband">
@@ -231,15 +267,15 @@ export default function Training({ setMode }) {
             <div className="tte-ref-card-titlebar">
               <div className="tte-ref-title-left">
                 <span className="tte-ref-view-title">
-                  {matchedProbeView ? matchedProbeView.view_name : "Awaiting Matched View"}
+                  {probeViewTitle}
                 </span>
                 <span className="tte-ref-green-pill">
-                  {matchedProbeView?.mnemonic ?? "Probe"}
+                  {displayedProbeView?.mnemonic ?? "Blank"}
                 </span>
               </div>
 
               <span className="tte-ref-blue-pill">
-                {matchedProbeView?.category ?? "Training"}
+                {displayedProbeView?.category ?? "Training"}
               </span>
             </div>
 
@@ -249,9 +285,13 @@ export default function Training({ setMode }) {
                   <div className="tte-ref-section-label">PROBE POSITION IMAGE</div>
                   <div className="tte-ref-media-frame">
                     <MediaImage
-                      src={matchedProbeView?.image}
-                      alt={matchedProbeView?.view_name ?? "Matched TTE view"}
-                      fallbackTitle="Waiting for a calibrated probe match"
+                      src={probePositionImage}
+                      alt={displayedProbeView?.view_name ?? probeViewTitle}
+                      fallbackTitle={
+                        hasActiveUnmatchedProbe
+                          ? "No matching probe position"
+                          : "Waiting for probe contact"
+                      }
                     />
                   </div>
                 </div>
@@ -260,8 +300,8 @@ export default function Training({ setMode }) {
                   <div className="tte-ref-section-label">ECHOCARDIOGRAPHY VIDEO</div>
                   <div className="tte-ref-media-frame">
                     <MediaVideo
-                      src={matchedProbeView?.video}
-                      fallbackTitle="Matched echocardiography video will appear here"
+                      src={echoVideo}
+                      fallbackTitle="Waiting for probe contact"
                     />
                   </div>
                 </div>
@@ -324,11 +364,11 @@ export default function Training({ setMode }) {
 
           <select
             className="tte-ref-view-select-top"
-            value={currentId}
+            value={selectedViewName || currentView.view_name}
             onChange={handleFilteredSelectChange}
           >
             {filteredViews.map((view) => (
-              <option key={view.id} value={String(view.id)}>
+              <option key={view.id} value={view.view_name}>
                 {view.view_name}
               </option>
             ))}
@@ -351,7 +391,7 @@ export default function Training({ setMode }) {
                 <div className="tte-ref-section-label">UNLABELLED REFERENCE STILL</div>
                 <div className="tte-ref-media-frame">
                   <MediaImage
-                    src={currentView.image}
+                    src={currentView.reference_image}
                     alt={currentView.view_name}
                   />
                 </div>
@@ -361,7 +401,7 @@ export default function Training({ setMode }) {
                 <div className="tte-ref-section-label">IDENTIFY STRUCTURE</div>
                 <div className="tte-ref-media-frame">
                   <TrainingHotspotVideo
-                    src={currentView.video}
+                    src={currentView.identify_video}
                     hotspots={currentHotspots}
                     optionPool={hotspotOptionPool}
                   />
