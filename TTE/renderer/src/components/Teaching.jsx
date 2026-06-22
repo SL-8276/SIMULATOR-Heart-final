@@ -1,24 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { views } from "../../../data/tteData.js";
-import {
-  teachingExtraViews,
-  teachingSubviewsByViewId
-} from "../data/teachingSubviews.js";
+import { teachingSubviewsByViewId } from "../data/teachingSubviews.js";
+import { mainTteViews } from "../data/tteViewCatalog.js";
 import { MediaAsset, MediaImage, MediaVideo, MediaVideoSnapshot } from "./ReferenceMedia.jsx";
 
-const suprasternalView = views.find((view) => view.id === 19);
-const finalTeachingViews = [
-  teachingExtraViews.find((view) => view.id === "teaching-psax-pa-bifurcation"),
-  teachingExtraViews.find((view) => view.id === "teaching-subcostal-ivc-longaxis"),
-  suprasternalView
-].filter(Boolean);
-const finalTeachingViewIds = new Set(finalTeachingViews.map((view) => view.id));
-const teachingViews = views
-  .filter((view) => view.id !== 19)
-  .concat(
-    teachingExtraViews.filter((view) => !finalTeachingViewIds.has(view.id)),
-    finalTeachingViews
-  );
+const teachingViews = mainTteViews;
 
 export default function Teaching({ setMode }) {
   const [search, setSearch] = useState("");

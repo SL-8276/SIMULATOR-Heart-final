@@ -23,7 +23,7 @@ export const supplementalTrainingHotspotsByViewId = {
     { id: "subivc-extra-aorta", label: "Aorta", x: 43.62, y: 57.54, options: ["Aorta", "IVC", "Liver", "RA"] }
   ],
   19: [
-    { id: "suplax-extra-bca", label: "BCA", x: 56.47, y: 25.75, options: ["BCA", "LCC", "LSCA", "Arch"] }
+    { id: "suplax-extra-bca", label: "BCA", x: 52.88, y: 25.75, options: ["BCA", "LCC", "LSCA", "Arch"] }
   ],
   "teaching-psax-pa-bifurcation": [
     { id: "teach-psax-pa-bifurcation-1", label: "RV", x: 45.09, y: 40.1, options: ["RV", "LV", "RA", "PA"] },
@@ -36,6 +36,11 @@ export const supplementalTrainingHotspotsByViewId = {
     { id: "teach-subcostal-ivc-longaxis-1", label: "Liver", x: 48.72, y: 37.76, options: ["Liver", "IVC", "Aorta", "RA"] },
     { id: "teach-subcostal-ivc-longaxis-2", label: "IVC", x: 49.62, y: 64.35, options: ["IVC", "Aorta", "Liver", "RA"] },
     { id: "teach-subcostal-ivc-longaxis-3", label: "RA", x: 59.87, y: 66.39, options: ["RA", "RV", "LA", "IAS"] }
+  ],
+  "teaching-subcostal-mitral": [
+    { id: "teach-subcostal-mitral-lv", label: "LV", x: 52.25, y: 45.04, options: ["LV", "RV", "AML", "PML"] },
+    { id: "teach-subcostal-mitral-aml", label: "AML", x: 48.31, y: 55.0, options: ["AML", "PML", "LV", "MV"] },
+    { id: "teach-subcostal-mitral-pml", label: "PML", x: 56.8, y: 48.23, options: ["PML", "AML", "LV", "MV"] }
   ]
 };
 
@@ -244,13 +249,12 @@ export const trainingViewOverrides = {
   },
 
   19: {
-    image: "/assets/training/images/SupLAXEcho.png",
-    video: "/assets/training/videos/SupLAX.mp4",
+    image: "/assets/teaching-subviews/suprasternal-aortic-lax.png",
     hotspots: [
-      { id: "suplax-lcc", label: "LCC", x: 60.03, y: 28.24, options: ["LCC", "BCA", "LSCA", "Arch"] },
-      { id: "suplax-lsca", label: "LSCA", x: 61.73, y: 38.74, options: ["LCC", "BCA", "LSCA", "Arch"] },
-      { id: "suplax-dta", label: "DTA", x: 60.03, y: 57.74, options: ["Arch", "DTA", "LSCA", "PA"] },
-      { id: "suplax-arch", label: "Arch", x: 53.44, y: 35.74, options: ["LCC", "BCA", "LSCA", "Arch"] }
+      { id: "suplax-lcc", label: "LCC", x: 59.7, y: 31.3, options: ["LCC", "BCA", "LSCA", "Arch"] },
+      { id: "suplax-lsca", label: "LSCA", x: 63.69, y: 39.57, options: ["LCC", "BCA", "LSCA", "Arch"] },
+      { id: "suplax-dta", label: "DTA", x: 54.73, y: 53.23, options: ["Arch", "DTA", "LSCA", "PA"] },
+      { id: "suplax-arch", label: "Arch", x: 48.14, y: 33.5, options: ["LCC", "BCA", "LSCA", "Arch"] }
     ]
   }
 };

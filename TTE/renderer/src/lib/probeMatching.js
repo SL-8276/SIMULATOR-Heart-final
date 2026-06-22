@@ -36,6 +36,16 @@ export function extractQuaternion(reading) {
   };
 }
 
+function normalizeQuaternionVector(quaternion) {
+  const values = [quaternion.qx, quaternion.qy, quaternion.qz, quaternion.qw];
+  if (!values.every(Number.isFinite)) return null;
+
+  const magnitude = Math.hypot(...values);
+  if (!magnitude) return null;
+
+  return values.map((value) => value / magnitude);
+}
+
 export function formatQuaternion(quaternion) {
   if (!quaternion) return "";
 
@@ -115,21 +125,19 @@ export function findMatchingView(reading, calibrations, views) {
 
       if (!tagMatches) return null;
 
-      const deltas = ["qx", "qy", "qz", "qw"].map((key) => {
-        const currentValue = normalized[key];
-        const savedValue = savedQuaternion[key];
-
-        if (currentValue === null || savedValue === null) {
-          return Number.POSITIVE_INFINITY;
-        }
-
-        return Math.abs(currentValue - savedValue);
-      });
-
-      const hasQuaternion = deltas.every(Number.isFinite);
-      const distance = hasQuaternion
-        ? Math.hypot(...deltas)
-        : Number.POSITIVE_INFINITY;
+      const currentVector = normalizeQuaternionVector(normalized);
+      const savedVector = normalizeQuaternionVector(savedQuaternion);
+      const hasQuaternion = Boolean(currentVector && savedVector);
+      const directDeltas = hasQuaternion
+        ? currentVector.map((value, index) => Math.abs(value - savedVector[index]))
+        : [Number.POSITIVE_INFINITY];
+      const inverseDeltas = hasQuaternion
+        ? currentVector.map((value, index) => Math.abs(value + savedVector[index]))
+        : [Number.POSITIVE_INFINITY];
+      const directDistance = Math.hypot(...directDeltas);
+      const inverseDistance = Math.hypot(...inverseDeltas);
+      const deltas = inverseDistance < directDistance ? inverseDeltas : directDeltas;
+      const distance = Math.min(directDistance, inverseDistance);
 
       return {
         view,
@@ -150,6 +158,14 @@ export function findMatchingView(reading, calibrations, views) {
     .sort((left, right) => left.distance - right.distance);
 
   if (exact.length) return exact[0];
+
+  const calibratedTagMatches = normalized.tag
+    ? candidates
+        .filter((candidate) => normalizeTag(candidate.calibration.tag) === normalized.tag)
+        .sort((left, right) => left.distance - right.distance)
+    : [];
+
+  if (calibratedTagMatches.length) return calibratedTagMatches[0];
 
   return null;
 }
