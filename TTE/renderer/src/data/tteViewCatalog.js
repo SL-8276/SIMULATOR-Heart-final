@@ -12,6 +12,9 @@ const extraTrainingMediaById = {
   "teaching-subcostal-ivc-longaxis": {
     training_image: "/assets/training/images/subcostal-ivc-longaxis.png",
     training_video: "/assets/training/videos/subcostal-ivc-longaxis.mp4"
+  },
+  "teaching-subcostal-mitral": {
+    training_image: "/assets/teaching-subviews/subcostal-sax-mitral-level.png"
   }
 };
 
@@ -19,6 +22,11 @@ const teachingMainViews = teachingExtraViews.map((view) => ({
   ...view,
   ...(extraTrainingMediaById[view.id] ?? {})
 }));
+
+const baseViewById = new Map(views.map((view) => [view.id, view]));
+const teachingMainViewById = new Map(
+  teachingMainViews.map((view) => [view.id, view])
+);
 
 function makeSubviewView(parentView, subview) {
   return {
@@ -37,11 +45,31 @@ function makeSubviewView(parentView, subview) {
   };
 }
 
-const teachingSubviewViews = views.flatMap((view) => {
+export const mainTteViews = [
+  baseViewById.get(1),
+  baseViewById.get(2),
+  baseViewById.get(3),
+  baseViewById.get(4),
+  baseViewById.get(5),
+  baseViewById.get(6),
+  baseViewById.get(7),
+  teachingMainViewById.get("teaching-psax-pa-bifurcation"),
+  baseViewById.get(9),
+  baseViewById.get(10),
+  baseViewById.get(11),
+  baseViewById.get(12),
+  baseViewById.get(13),
+  baseViewById.get(14),
+  teachingMainViewById.get("teaching-subcostal-mitral"),
+  baseViewById.get(16),
+  teachingMainViewById.get("teaching-subcostal-ivc-longaxis"),
+  baseViewById.get(19)
+].filter(Boolean);
+
+const teachingSubviewViews = mainTteViews.flatMap((view) => {
   const subviews = teachingSubviewsByViewId[view.id] ?? [];
   return subviews.map((subview) => makeSubviewView(view, subview));
 });
 
 export const tteViews = views;
-export const mainTteViews = views.concat(teachingMainViews);
-export const allTteViews = views.concat(teachingMainViews, teachingSubviewViews);
+export const allTteViews = mainTteViews.concat(teachingSubviewViews);
